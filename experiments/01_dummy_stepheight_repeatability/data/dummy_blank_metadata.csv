@@ -1,0 +1,4 @@
+profile,source_file,NanoStat SWV multi-run export,Exported_at,Runs,Peak_runs,Dummy_runs,I_peak_mean_nA,I_peak_sd_nA,V_peak_mean_mV,V_peak_sd_mV,sigma_baseline_mean_nA,sigma_baseline_sd_nA,SNR_mean,Dummy_mean_delta_mean_nA,Dummy_sd_delta_mean_nA,Dummy_error_mean_pct,Peak_search_window_mV
+1mVSeg,dummy1mVSeg.csv,,2026-09-07T13:18:54.194Z,5,0,5,,,,,,,,69.381858,0.609996,1.144000,-400..-80
+2mV,dummy2mV.csv,,2026-09-07T13:14:13.318Z,5,0,5,,,,,,,,69.384426,0.606753,1.138000,-400..-80
+5mV,dummy5mV.csv,,2026-09-07T13:09:34.660Z,5,0,5,,,,,,,,69.393158,0.618837,1.126000,-400..-80

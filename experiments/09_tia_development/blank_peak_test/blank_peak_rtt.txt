@@ -1,0 +1,170 @@
+Paste RTT output from test 'l' here.
+
+Expected lines include:
+[BLANK-PEAK-CSV] V_mV,Delta_I_nA,Delta_I_avg3_nA,I_forward_nA,I_reverse_nA
+[BLANK-PEAK-CSV] -450.225,-1.234,-1.210,...
+
+00> *** Using Zephyr OS v3.7.99-aa34a5632971 ***
+00> 
+00> 
+00> ========================================
+00>  NanoStat Bring-up
+00> ========================================
+00> nPM1300 core devices ready.
+00> [Power] SLP Button listener active (3s graceful shutdown).
+00> [Power] Starting analog front-end power sequence...
+00> [Power] Power sequence complete. All sensor rails stable.
+00> SUCCESS: Power rails established & SLP Button Listener Active.
+00> [OLED] SSD1315 raw display initialized.
+00> [AD5941] Starting AD5941 App Initialization...
+00> [AD5941] ID check passed. Read ID: 0x4144
+00> [AD5941] AD5940 Library Initialized.
+00> [AD5941] Clock Configured (16MHz HFOSC).
+00> [AD5941] Low Power Loop Configured (RTIA = 512k).
+00> [AD5941] LPTIA0 hardware offset calibration is temporarily disabled.
+00> [AD5941] HS switch matrix opened; LP loop owns the electrode path.
+00> [AD5941] FIFO configured: source=SINC2/Notch path, threshold=10.
+00> [AD5941] GP0 routed to AD5941 INTC0 output.
+00> [AD5941] Zephyr GP0 interrupt configured on P0.29.
+00> [AD5941] AD5941 subsystem initialization completed successfully.
+00> AFE Subsystem Bring-up SUCCESS!
+00> 
+00> ===================================
+00> Ready for AD5941 Test Selection.
+00> Connect the external resistor between SE0 and CE0/RE0.
+00> Press '1' for +50mV test.
+00> Press '2' for +100mV test.
+00> Press '3' for Sequencer CA +100mV / 5s test.
+00> Press '4' for Sequencer CV staircase test.
+00> Press '5' for Sequencer SWV pulse test.
+00> Press '6' for Sequencer SWV-KDM diagnostic test.
+00> Press '7' for Sequencer SWV-KDM fast test.
+00> Press '8' for Sequencer SWV slow-motion SP test.
+00> Press '9' for Sequencer SWV low-impedance SP test.
+00> Press '0' for Sequencer SWV mixed-mode HSTIA test.
+00> Press 'a' for Sequencer SWV HSTIA external 2M 150Hz comparison test.
+00> Press 'b' for Sequencer SWV LPTIA external 2M 150Hz comparison test.
+00> Press 'c' for Sequencer SWV LPTIA external 2M 210Hz detune test.
+00> Press 'd' for Sequencer SWV LPTIA 512k||2M boost 150Hz test.
+00> Press 'e' for Sequencer SWV LPTIA external 2M no-boost 150Hz test.
+00> Press 'f' for Sequencer SWV HSTIA external 2M 150Hz Notch test.
+00> Press 'g' for Sequencer SWV LPTIA external 2M 150Hz Notch test.
+00> Press 'h' for Sequencer dual-frequency SWV/KDM dummy test.
+00> Press 'i' for AUTO repeat: HSTIA external AIN1 2M 150Hz, CTIA=4pF, 5 runs, 10s interval.
+00> Press 'j' for LPTIA endpoint step response test.
+00> Press 'k' for HSTIA endpoint step response test.
+00> Press 'l' for single-frequency PBS/MB blank peak SWV test.
+00> ===================================
+  < l
+00> [TEST] Single-frequency PBS/MB blank peak SWV mode selected.
+00> 
+00> [BLANK-PEAK] Enter SWV frequency in Hz (1..250), then press Enter.
+00> [BLANK-PEAK] Example: 150<Enter>. Empty Enter uses 150Hz.
+00> [BLANK-PEAK] f = 
+  < 110
+00> 110
+00> [BLANK-PEAK] Frequency selected: 110 Hz.
+00> [BLANK-PEAK] Single-frequency PBS/MB blank peak SWV selected.
+00> [BLANK-PEAK] f=110Hz, half=4545us, expected_scan=763 ms, window=-450mV..0mV, step=0x0A, pulse=+/-0x41.
+00> [BLANK-PEAK] Path: LPTIA external 2M + 220pF, internal RTIA=open, SW9, BOOST2, Notch bypassed.
+00> [AD5941] SWV-KDM fast filter configured: SINC2 output, Notch bypassed, OSR=22.
+00> [AD5941] HS switch matrix opened; LP loop owns the electrode path.
+00> [AD5941] SRAM allocated for sequencer test: FIFO=4KB, SEQ=2KB.
+00> [AD5941] LPTIA0 mode: internal RTIA=open, external 2M + 220pF expected, boost=BOOST2, LPTIACON0=0x00001010.
+00> [BLANK-PEAK] LPTIA external feedback switch enabled: LPTIASW0=0x0000022C.
+00> [BLANK-PEAK] Sequence loaded: SeqId=0, len=339 words, logical_points=168.
+00> [BLANK-PEAK] Triggering scan now; RTT CSV will print after capture finalizes.
+00> [AD5941] SEQ finish work scheduled in 1763 ms, ret=1.
+00> [AD5941] SEQ finish work entered: capture=BlankPeak-SWV, kdm_stage=0, current_total=5552.
+00> [AD5941] Sequencer capture finalized: drained_tail=0, total=5552/24000 samples.
+00> [BLANK-PEAK] Extracting single-frequency SWV peak from 5552 FIFO samples.
+00> [BLANK-PEAK] CSV columns: V_mV,Delta_I_nA,Delta_I_avg3_nA,I_forward_nA,I_reverse_nA
+00> [BLANK-PEAK-CSV] V_mV,Delta_I_nA,Delta_I_avg3_nA,I_forward_nA,I_reverse_nA
+00> [SWV-SP] Auto endpoint phase shift=-8 samples, smoothness_score=363.467 nA, mean_delta=-62.689 nA.
+00> [BLANK-PEAK-CSV] -450.173,-60.264,-63.128,376.537,436.801
+00> [BLANK-PEAK-CSV] -444.801,-65.993,-62.073,371.601,437.594
+00> [BLANK-PEAK-CSV] -439.429,-59.963,-63.855,367.980,427.943
+00> [BLANK-PEAK-CSV] -434.057,-65.610,-62.060,361.500,427.110
+00> [BLANK-PEAK-CSV] -428.685,-60.607,-63.635,358.759,419.366
+00> [BLANK-PEAK-CSV] -423.313,-64.689,-61.870,350.732,415.421
+00> [BLANK-PEAK-CSV] -417.941,-60.315,-63.242,351.000,411.315
+00> [BLANK-PEAK-CSV] -412.569,-64.724,-62.198,340.285,405.009
+00> [BLANK-PEAK-CSV] -407.197,-61.556,-63.235,340.183,401.739
+00> [BLANK-PEAK-CSV] -401.825,-63.426,-62.927,331.322,394.748
+00> [BLANK-PEAK-CSV] -396.453,-63.799,-62.311,329.412,393.211
+00> [BLANK-PEAK-CSV] -391.081,-59.708,-63.184,323.442,383.150
+00> [BLANK-PEAK-CSV] -385.709,-66.046,-61.878,317.941,383.987
+00> [BLANK-PEAK-CSV] -380.337,-59.882,-63.835,314.348,374.230
+00> [BLANK-PEAK-CSV] -374.965,-65.579,-61.983,307.883,373.462
+00> [BLANK-PEAK-CSV] -369.593,-60.489,-63.615,305.192,365.681
+00> [BLANK-PEAK-CSV] -364.221,-64.779,-61.843,297.007,361.786
+00> [BLANK-PEAK-CSV] -358.849,-60.262,-63.273,297.445,357.707
+00> [BLANK-PEAK-CSV] -353.477,-64.779,-62.206,286.600,351.379
+00> [BLANK-PEAK-CSV] -348.105,-61.578,-63.294,286.644,348.222
+00> [BLANK-PEAK-CSV] -342.733,-63.526,-62.980,277.649,341.175
+00> [BLANK-PEAK-CSV] -337.361,-63.837,-62.283,275.873,339.710
+00> [BLANK-PEAK-CSV] -331.989,-59.487,-63.138,269.850,329.337
+00> [BLANK-PEAK-CSV] -326.617,-66.092,-61.723,264.256,330.348
+00> [BLANK-PEAK-CSV] -321.245,-59.590,-63.818,260.847,320.437
+00> [BLANK-PEAK-CSV] -315.873,-65.772,-61.882,254.142,319.914
+00> [BLANK-PEAK-CSV] -310.501,-60.284,-63.641,251.662,311.946
+00> [BLANK-PEAK-CSV] -305.129,-64.867,-61.728,243.256,308.123
+00> [BLANK-PEAK-CSV] -299.757,-60.035,-63.210,244.028,304.063
+00> [BLANK-PEAK-CSV] -294.385,-64.729,-62.081,232.900,297.629
+00> [BLANK-PEAK-CSV] -289.013,-61.481,-63.259,233.139,294.620
+00> [BLANK-PEAK-CSV] -283.641,-63.569,-62.949,223.924,287.493
+00> [BLANK-PEAK-CSV] -278.269,-63.799,-62.243,222.300,286.099
+00> [BLANK-PEAK-CSV] -272.897,-59.363,-63.108,216.283,275.646
+00> [BLANK-PEAK-CSV] -267.525,-66.164,-61.694,210.608,276.772
+00> [BLANK-PEAK-CSV] -262.153,-59.555,-63.803,207.218,266.773
+00> [BLANK-PEAK-CSV] -256.781,-65.691,-61.812,200.541,266.232
+00> [BLANK-PEAK-CSV] -251.409,-60.191,-63.579,198.067,258.258
+00> [BLANK-PEAK-CSV] -246.037,-64.857,-61.716,189.621,254.478
+00> [BLANK-PEAK-CSV] -240.665,-60.100,-63.224,190.371,250.471
+00> [BLANK-PEAK-CSV] -235.293,-64.717,-62.118,179.233,243.950
+00> [BLANK-PEAK-CSV] -229.921,-61.537,-63.256,179.507,241.044
+00> [BLANK-PEAK-CSV] -224.549,-63.516,-62.950,170.326,233.842
+00> [BLANK-PEAK-CSV] -219.177,-63.799,-62.234,168.727,232.526
+00> [BLANK-PEAK-CSV] -213.805,-59.388,-63.138,162.632,222.020
+00> [BLANK-PEAK-CSV] -208.433,-66.229,-61.681,156.998,223.227
+00> [BLANK-PEAK-CSV] -203.061,-59.428,-63.808,153.657,213.085
+00> [BLANK-PEAK-CSV] -197.689,-65.769,-61.784,146.837,212.606
+00> [BLANK-PEAK-CSV] -192.317,-60.156,-63.574,144.445,204.601
+00> [BLANK-PEAK-CSV] -186.945,-64.798,-61.664,136.023,200.821
+00> [BLANK-PEAK-CSV] -181.573,-60.038,-63.158,136.785,196.823
+00> [BLANK-PEAK-CSV] -176.201,-64.640,-62.049,125.641,190.281
+00> [BLANK-PEAK-CSV] -170.829,-61.470,-63.186,125.983,187.453
+00> [BLANK-PEAK-CSV] -165.457,-63.450,-62.891,116.688,180.138
+00> [BLANK-PEAK-CSV] -160.085,-63.753,-62.166,115.126,178.879
+00> [BLANK-PEAK-CSV] -154.713,-59.297,-63.087,109.066,168.363
+00> [BLANK-PEAK-CSV] -149.341,-66.213,-61.613,103.391,169.604
+00> [BLANK-PEAK-CSV] -143.969,-59.329,-63.759,100.118,159.447
+00> [BLANK-PEAK-CSV] -138.597,-65.737,-61.723,93.255,158.992
+00> [BLANK-PEAK-CSV] -133.225,-60.103,-63.553,90.841,150.944
+00> [BLANK-PEAK-CSV] -127.853,-64.820,-61.631,82.341,147.161
+00> [BLANK-PEAK-CSV] -122.481,-59.972,-63.174,83.200,143.172
+00> [BLANK-PEAK-CSV] -117.109,-64.732,-62.050,71.947,136.679
+00> [BLANK-PEAK-CSV] -111.737,-61.447,-63.237,72.379,133.826
+00> [BLANK-PEAK-CSV] -106.365,-63.532,-62.894,63.030,126.562
+00> [BLANK-PEAK-CSV] -100.993,-63.705,-62.190,61.522,125.227
+00> [BLANK-PEAK-CSV] -95.621,-59.335,-63.097,55.390,114.725
+00> [BLANK-PEAK-CSV] -90.249,-66.251,-61.634,49.743,115.994
+00> [BLANK-PEAK-CSV] -84.877,-59.316,-63.774,46.467,105.783
+00> [BLANK-PEAK-CSV] -79.505,-65.756,-61.690,39.632,105.388
+00> [BLANK-PEAK-CSV] -74.133,-60.000,-63.507,37.240,97.240
+00> [BLANK-PEAK-CSV] -68.761,-64.767,-61.567,28.768,93.535
+00> [BLANK-PEAK-CSV] -63.389,-59.935,-63.180,29.586,89.521
+00> [BLANK-PEAK-CSV] -58.017,-64.839,-62.067,18.221,83.060
+00> [BLANK-PEAK-CSV] -52.645,-61.428,-63.286,18.707,80.135
+00> [BLANK-PEAK-CSV] -47.273,-63.591,-62.895,9.311,72.902
+00> [BLANK-PEAK-CSV] -41.901,-63.668,-62.224,7.902,71.570
+00> [BLANK-PEAK-CSV] -36.529,-59.413,-62.945,1.720,61.133
+00> [BLANK-PEAK-CSV] -31.157,-65.756,-61.359,-3.478,62.278
+00> [BLANK-PEAK-CSV] -25.785,-58.908,-63.320,-6.782,52.126
+00> [BLANK-PEAK-CSV] -20.413,-65.298,-61.254,-13.601,51.697
+00> [BLANK-PEAK-CSV] -15.041,-59.558,-63.072,-15.985,43.573
+00> [BLANK-PEAK-CSV] -9.669,-64.362,-61.148,-24.431,39.931
+00> [BLANK-PEAK-CSV] -4.297,-59.524,-61.943,-23.619,35.905
+00> [BLANK-PEAK] Peak(abs avg3): step=3 Vbase=-439.429 mV Delta_I_avg3=-63.855 nA
+00> [AD5941] BlankPeak-SWV capture complete: 5552 samples stored in MCU RAM.
+00> [AD5941] BlankPeak-SWV avg=206.165 nA, min=-25.797 nA, max=438.945 nA

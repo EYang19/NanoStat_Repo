@@ -1,0 +1,7 @@
+condition,sample_order,time_label,mean_nmol_L,sd_nmol_L,n,source_doi
+Control,1,Baseline,8.6,4.7,16,10.3389/neuro.08.005.2008
+Control,2,Post-stress / matched time,9.6,3.2,16,10.3389/neuro.08.005.2008
+Control,3,End of session,10.6,3.2,16,10.3389/neuro.08.005.2008
+TSST stress,1,Baseline,10.0,3.9,19,10.3389/neuro.08.005.2008
+TSST stress,2,Post-stress / matched time,23.2,13.6,19,10.3389/neuro.08.005.2008
+TSST stress,3,End of session,15.6,7.2,19,10.3389/neuro.08.005.2008

@@ -1,0 +1,5 @@
+board:
+  name: NanoStat
+  vendor: Chengyu_Yang_Imperial_College_London
+  socs:
+    - name: nrf52840

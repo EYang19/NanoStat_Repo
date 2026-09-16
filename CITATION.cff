@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use NanoStat or its datasets, please cite this repository and the accompanying dissertation."
+title: "NanoStat: a portable BLE-connected electrochemical reader"
+type: software
+authors:
+  - family-names: Yang
+    given-names: Chengyu
+repository-code: "https://github.com/EYang19/NanoStat_Repo"
+version: 1.0.0
+date-released: 2026-09-16
+abstract: >-
+  Hardware, firmware, browser software, experimental data, analysis scripts,
+  and documentation for the NanoStat portable potentiostat project.
+

@@ -1,0 +1,5 @@
+condition,time_after_waking_min,mean_reported,sd_reported,n,reported_unit,source_doi
+Neutral day,0,11.74,6.56,25,nmol,10.1007/s10484-019-09449-9
+Neutral day,30,18.88,9.23,25,nmol,10.1007/s10484-019-09449-9
+Exam day,0,18.90,7.58,25,nmol,10.1007/s10484-019-09449-9
+Exam day,30,28.04,20.31,25,nmol,10.1007/s10484-019-09449-9

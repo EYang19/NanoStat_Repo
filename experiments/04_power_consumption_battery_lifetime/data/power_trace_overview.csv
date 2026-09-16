@@ -1,0 +1,9 @@
+metric,value
+trace_duration_s,100.059
+point_count,860
+median_sample_interval_ms,105
+p95_sample_interval_ms,297
+intervals_over_200ms,48
+overall_mean_mA,13.418604651162791
+overall_median_mA,7.0
+overall_std_mA,17.73687861968054

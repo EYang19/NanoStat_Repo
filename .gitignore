@@ -1,0 +1,26 @@
+# Build products
+build*/
+firmware/build*/
+*.elf
+*.hex
+*.map
+*.bin
+*.uf2
+*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/.nrf-connect/
+.vscode/ipch/
+
+# Generated local exports
+output/
+tmp/
+

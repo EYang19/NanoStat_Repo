@@ -1,0 +1,6 @@
+if BOARD_NANOSTAT
+
+config BT_CTLR
+	default BT
+
+endif # BOARD_NANOSTAT

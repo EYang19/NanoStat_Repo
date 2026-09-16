@@ -1,0 +1,980 @@
+00> *** Booting nRF Connect SDK v2.9.2-4ab7b98fc76f ***
+00> *** Using Zephyr OS v3.7.99-aa34a5632971 ***
+00> 
+00> 
+00> ========================================
+00>  NanoStat Bring-up
+00> ========================================
+00> nPM1300 core devices ready.
+00> [BLE] Bluetooth initialized.
+00> [BLE] Advertising as "NanoStat" with Nordic UART Service.
+00> [Power] SLP Button listener active (3s graceful shutdown).
+00> [Power] Starting analog front-end power sequence...
+00> [Power] Power sequence complete. All sensor rails stable.
+00> SUCCESS: Power rails established & SLP Button Listener Active.
+00> [OLED] SSD1315 raw display initialized.
+00> [AD5941] Starting AD5941 App Initialization...
+00> [AD5941] ID check passed. Read ID: 0x4144
+00> [AD5941] AD5940 Library Initialized.
+00> [AD5941] Clock Configured (16MHz HFOSC).
+00> [AD5941] Low Power Loop Configured (RTIA = 512k).
+00> [AD5941] LPTIA0 hardware offset calibration is temporarily disabled.
+00> [AD5941] HS switch matrix opened.
+00> [AD5941] FIFO configured: source=SINC2/Notch path, threshold=10.
+00> [AD5941] GP0 routed to AD5941 INTC0 output.
+00> [AD5941] Zephyr GP0 interrupt configured on P0.29.
+00> [AD5941] HS switch matrix opened.
+00> [AD5941] Safe idle/high-Z entered after init: SW matrix open, LPTIA/HSTIA opened, LPDAC/LPPA/TIA/ADC off.
+00> EVT,HIGHZ,SW_MATRIX_OPEN=1,LPDAC_OFF=1,LPTIA_OPEN=1,HSTIA_OPEN=1,ADC_OFF=1
+00> [AD5941] AD5941 subsystem initialization completed successfully.
+00> AFE Subsystem Bring-up SUCCESS!
+00> [TEST] Idle BLE/OLED loop active. Press 'y' in RTT for AD5941 menu, or 'b' for battery status.
+  < P
+00> [BATCUR] Current trace STARTED. Format: BATCUR,t_ms=...,IBAT_UA=...
+00> BATCUR,t_ms=8347,IBAT_UA=31000
+00> BATCUR,t_ms=8453,IBAT_UA=2000
+00> BATCUR,t_ms=8558,IBAT_UA=2000
+00> BATCUR,t_ms=8663,IBAT_UA=33000
+00> BATCUR,t_ms=8768,IBAT_UA=2000
+00> BATCUR,t_ms=8874,IBAT_UA=2000
+00> BATCUR,t_ms=8979,IBAT_UA=5000
+00> BATCUR,t_ms=9084,IBAT_UA=5000
+00> BATCUR,t_ms=9189,IBAT_UA=5000
+00> BATCUR,t_ms=9295,IBAT_UA=2000
+00> BATCUR,t_ms=9400,IBAT_UA=2000
+00> BATCUR,t_ms=9505,IBAT_UA=3000
+00> BATCUR,t_ms=9610,IBAT_UA=63000
+00> BATCUR,t_ms=9716,IBAT_UA=2000
+00> BATCUR,t_ms=9821,IBAT_UA=62000
+00> BATCUR,t_ms=9926,IBAT_UA=2000
+00> BATCUR,t_ms=10031,IBAT_UA=5000
+00> BATCUR,t_ms=10329,IBAT_UA=2000
+00> BATCUR,t_ms=10434,IBAT_UA=15000
+00> BATCUR,t_ms=10540,IBAT_UA=2000
+00> BATCUR,t_ms=10645,IBAT_UA=0
+00> BATCUR,t_ms=10750,IBAT_UA=63000
+00> BATCUR,t_ms=10855,IBAT_UA=2000
+00> BATCUR,t_ms=10961,IBAT_UA=2000
+00> BATCUR,t_ms=11066,IBAT_UA=2000
+00> BATCUR,t_ms=11171,IBAT_UA=2000
+00> BATCUR,t_ms=11276,IBAT_UA=31000
+00> BATCUR,t_ms=11382,IBAT_UA=63000
+00> BATCUR,t_ms=11487,IBAT_UA=2000
+00> BATCUR,t_ms=11592,IBAT_UA=5000
+00> BATCUR,t_ms=11697,IBAT_UA=0
+00> BATCUR,t_ms=11803,IBAT_UA=1000
+00> BATCUR,t_ms=11908,IBAT_UA=2000
+00> BATCUR,t_ms=12013,IBAT_UA=2000
+00> BATCUR,t_ms=12118,IBAT_UA=63000
+00> BATCUR,t_ms=12580,IBAT_UA=2000
+00> BATCUR,t_ms=12685,IBAT_UA=2000
+00> BATCUR,t_ms=12791,IBAT_UA=2000
+00> BATCUR,t_ms=12896,IBAT_UA=2000
+00> BATCUR,t_ms=13001,IBAT_UA=2000
+00> BATCUR,t_ms=13106,IBAT_UA=2000
+00> BATCUR,t_ms=13212,IBAT_UA=5000
+00> BATCUR,t_ms=13317,IBAT_UA=5000
+00> BATCUR,t_ms=13422,IBAT_UA=2000
+00> BATCUR,t_ms=13527,IBAT_UA=5000
+00> BATCUR,t_ms=13633,IBAT_UA=0
+00> [BLE] Central connected.
+00> BATCUR,t_ms=13738,IBAT_UA=15000
+00> BATCUR,t_ms=13843,IBAT_UA=0
+00> BATCUR,t_ms=13948,IBAT_UA=5000
+00> BATCUR,t_ms=14054,IBAT_UA=2000
+00> BATCUR,t_ms=14159,IBAT_UA=16000
+00> BATCUR,t_ms=14264,IBAT_UA=5000
+00> [BLE] NUS TX notify enabled.
+00> BATCUR,t_ms=14370,IBAT_UA=2000
+00> BATCUR,t_ms=14678,IBAT_UA=5000
+00> BATCUR,t_ms=14784,IBAT_UA=2000
+00> BATCUR,t_ms=14889,IBAT_UA=16000
+00> BATCUR,t_ms=14994,IBAT_UA=64000
+00> BATCUR,t_ms=15099,IBAT_UA=2000
+00> BATCUR,t_ms=15205,IBAT_UA=2000
+00> BATCUR,t_ms=15310,IBAT_UA=5000
+00> BATCUR,t_ms=15415,IBAT_UA=5000
+00> BATCUR,t_ms=15520,IBAT_UA=2000
+00> BATCUR,t_ms=15626,IBAT_UA=2000
+00> BATCUR,t_ms=15731,IBAT_UA=2000
+00> BATCUR,t_ms=15836,IBAT_UA=63000
+00> BATCUR,t_ms=15941,IBAT_UA=8000
+00> BATCUR,t_ms=16047,IBAT_UA=1000
+00> BATCUR,t_ms=16152,IBAT_UA=4000
+00> BATCUR,t_ms=16258,IBAT_UA=0
+00> BATCUR,t_ms=16363,IBAT_UA=2000
+00> BATCUR,t_ms=16468,IBAT_UA=7000
+00> BATCUR,t_ms=16777,IBAT_UA=5000
+00> BATCUR,t_ms=16882,IBAT_UA=2000
+00> BATCUR,t_ms=16987,IBAT_UA=2000
+00> BATCUR,t_ms=17092,IBAT_UA=63000
+00> BATCUR,t_ms=17198,IBAT_UA=32000
+00> BATCUR,t_ms=17303,IBAT_UA=31000
+00> BATCUR,t_ms=17408,IBAT_UA=31000
+00> BATCUR,t_ms=17513,IBAT_UA=2000
+00> BATCUR,t_ms=17619,IBAT_UA=2000
+00> BATCUR,t_ms=17724,IBAT_UA=15000
+00> BATCUR,t_ms=17829,IBAT_UA=32000
+00> BATCUR,t_ms=17934,IBAT_UA=2000
+00> BATCUR,t_ms=18040,IBAT_UA=2000
+00> BATCUR,t_ms=18145,IBAT_UA=2000
+00> BATCUR,t_ms=18250,IBAT_UA=33000
+00> BATCUR,t_ms=18355,IBAT_UA=16000
+00> BATCUR,t_ms=18461,IBAT_UA=5000
+00> BATCUR,t_ms=18566,IBAT_UA=2000
+00> BATCUR,t_ms=18874,IBAT_UA=2000
+00> BATCUR,t_ms=18979,IBAT_UA=11000
+00> BATCUR,t_ms=19085,IBAT_UA=32000
+00> BATCUR,t_ms=19190,IBAT_UA=2000
+00> BATCUR,t_ms=19295,IBAT_UA=2000
+00> BATCUR,t_ms=19400,IBAT_UA=2000
+00> BATCUR,t_ms=19506,IBAT_UA=5000
+00> BATCUR,t_ms=19611,IBAT_UA=5000
+00> BATCUR,t_ms=19716,IBAT_UA=5000
+00> BATCUR,t_ms=19822,IBAT_UA=5000
+00> BATCUR,t_ms=19927,IBAT_UA=2000
+00> BATCUR,t_ms=20032,IBAT_UA=5000
+00> BATCUR,t_ms=20137,IBAT_UA=2000
+00> BATCUR,t_ms=20242,IBAT_UA=62000
+00> BATCUR,t_ms=20348,IBAT_UA=2000
+00> BATCUR,t_ms=20453,IBAT_UA=2000
+00> BATCUR,t_ms=20558,IBAT_UA=63000
+00> BATCUR,t_ms=20664,IBAT_UA=62000
+00> BATCUR,t_ms=20972,IBAT_UA=2000
+00> BATCUR,t_ms=21077,IBAT_UA=0
+00> BATCUR,t_ms=21182,IBAT_UA=15000
+00> BATCUR,t_ms=21287,IBAT_UA=2000
+00> BATCUR,t_ms=21393,IBAT_UA=2000
+00> BATCUR,t_ms=21498,IBAT_UA=2000
+00> BATCUR,t_ms=21603,IBAT_UA=5000
+00> BATCUR,t_ms=21708,IBAT_UA=5000
+00> BATCUR,t_ms=21814,IBAT_UA=63000
+00> BATCUR,t_ms=21919,IBAT_UA=5000
+00> BATCUR,t_ms=22024,IBAT_UA=5000
+00> BATCUR,t_ms=22129,IBAT_UA=2000
+00> BATCUR,t_ms=22235,IBAT_UA=32000
+00> BATCUR,t_ms=22340,IBAT_UA=0
+00> BATCUR,t_ms=22445,IBAT_UA=2000
+00> BATCUR,t_ms=22550,IBAT_UA=2000
+00> BATCUR,t_ms=22656,IBAT_UA=2000
+00> BATCUR,t_ms=22761,IBAT_UA=5000
+00> BATCUR,t_ms=23234,IBAT_UA=3000
+00> BATCUR,t_ms=23339,IBAT_UA=2000
+00> BATCUR,t_ms=23444,IBAT_UA=2000
+00> BATCUR,t_ms=23549,IBAT_UA=2000
+00> BATCUR,t_ms=23655,IBAT_UA=2000
+00> BATCUR,t_ms=23760,IBAT_UA=0
+00> BATCUR,t_ms=23865,IBAT_UA=63000
+00> BATCUR,t_ms=23970,IBAT_UA=5000
+00> BATCUR,t_ms=24076,IBAT_UA=5000
+00> BATCUR,t_ms=24181,IBAT_UA=2000
+00> BATCUR,t_ms=24286,IBAT_UA=5000
+00> BATCUR,t_ms=24392,IBAT_UA=2000
+00> BATCUR,t_ms=24497,IBAT_UA=63000
+00> BATCUR,t_ms=24602,IBAT_UA=63000
+00> BATCUR,t_ms=24707,IBAT_UA=11000
+00> BATCUR,t_ms=24813,IBAT_UA=2000
+00> BATCUR,t_ms=24918,IBAT_UA=5000
+00> BATCUR,t_ms=25023,IBAT_UA=2000
+00> BATCUR,t_ms=25331,IBAT_UA=31000
+00> BATCUR,t_ms=25437,IBAT_UA=5000
+00> BATCUR,t_ms=25542,IBAT_UA=2000
+00> BATCUR,t_ms=25647,IBAT_UA=31000
+00> BATCUR,t_ms=25752,IBAT_UA=5000
+00> BATCUR,t_ms=25858,IBAT_UA=63000
+00> BATCUR,t_ms=25963,IBAT_UA=2000
+00> BATCUR,t_ms=26068,IBAT_UA=2000
+00> BATCUR,t_ms=26173,IBAT_UA=2000
+00> BATCUR,t_ms=26279,IBAT_UA=2000
+00> BATCUR,t_ms=26384,IBAT_UA=5000
+00> [BLE] RX command: START,DUMMY_REPEAT,5MV,120,X330,995000,5
+00> BATCUR,t_ms=26489,IBAT_UA=2000
+00> BATCUR,t_ms=26595,IBAT_UA=2000
+00> BATCUR,t_ms=26700,IBAT_UA=62000
+00> [BLE] TX failed after retries: -12
+00> [AD5941] Soft-resetting measurement session state.
+00> [AD5941] HS switch matrix opened.
+00> [AD5941] Safe idle/high-Z entered after soft reset: SW matrix open, LPTIA/HSTIA opened, LPDAC/LPPA/TIA/ADC off.
+00> EVT,HIGHZ,SW_MATRIX_OPEN=1,LPDAC_OFF=1,LPTIA_OPEN=1,HSTIA_OPEN=1,ADC_OFF=1
+00> BATCUR,t_ms=26805,IBAT_UA=5000
+00> BATCUR,t_ms=26911,IBAT_UA=5000
+00> BATCUR,t_ms=27016,IBAT_UA=6000
+00> [BLE] TX failed after retries: -12
+00> [REPEAT] Dummy SWV repeat selected: profile=5MV, f=120Hz, RTIA=HSTIAEXT330K, dummy=995000 ohm, runs=5, interval=5000 ms.
+00> BATCUR,t_ms=27121,IBAT_UA=2000
+00> [BLE] TX failed after retries: -12
+00> [BLANK-PEAK] Dummy-cell validation SWV selected.
+00> [BLANK-PEAK] Profile=5MV (5.37mV full), f=120Hz, half=4166us, expected_scan=709 ms, E_WE-RE window=-450mV..0mV, step=0x0A, pulse=+/-0x41, logical_points=85.
+00> [BLANK-PEAK] Polarity note: WE(SE0)=VZERO, RE(RE0)=VBIAS, so E_WE-RE = VZERO - VBIAS.
+00> [BLANK-PEAK] Path: HSTIA external AIN2 330k, RTIA=330000 ohm, CTIA=4pF, LPPA/LPDAC waveform, Notch bypassed.
+00> [BLANK-PEAK] Purpose: compare external thin-film RTIA options against internal HSTIA 160k.
+00> [BLANK-PEAK] Quiet time: hold start potential for 3000 ms before FIFO/Sequencer scan.
+00> [BLANK-PEAK] Extended smoothing output enabled: avg3, smooth5, smooth7, SG5.
+00> [DUMMY-SWV] Dummy resistor=995000 ohm, expected |Delta_I| from +/-pulse = 70.187 nA.
+00> [SWV-SP] Phase guard enabled: expected dummy Delta_I=-70.187 nA for 995000 ohm dummy.
+00> [AD5941] SWV-KDM fast filter configured: SINC2 output, Notch bypassed, OSR=22.
+00> [AD5941] SRAM allocated for sequencer test: FIFO=2KB, SEQ=4KB.
+00> [AD5941] External-HSTIA switch matrix configured for HSTIA external AIN2 330k: D/P/N=open, T=TRTIA|external RTIA pin|SE0LOAD, TSW=0x00000114.
+00> [AD5941] HSTIA external AIN2 330k configured: RTIA=330000 ohm, CTIA=4pF, LPDACCON0=0x00000021, LPTIACON0=0x00001001, HSTIACON=0x00000001, HSRTIACON=0x00000048, DE0RESCON=0x00000095, TSW=0x00000114, LPTIASW0=0x00000094.
+00> [BLANK-PEAK] Holding start potential before scan: dac=0xB46 E_WE-RE=-450.173 mV, quiet=3000 ms.
+00> BATCUR,t_ms=27429,IBAT_UA=2000
+00> BATCUR,t_ms=27535,IBAT_UA=2000
+00> BATCUR,t_ms=27640,IBAT_UA=5000
+00> BATCUR,t_ms=27745,IBAT_UA=5000
+00> BATCUR,t_ms=27850,IBAT_UA=2000
+00> BATCUR,t_ms=27956,IBAT_UA=5000
+00> BATCUR,t_ms=28061,IBAT_UA=2000
+00> BATCUR,t_ms=28167,IBAT_UA=5000
+00> BATCUR,t_ms=28272,IBAT_UA=2000
+00> BATCUR,t_ms=28377,IBAT_UA=2000
+00> BATCUR,t_ms=28482,IBAT_UA=6000
+00> BATCUR,t_ms=28588,IBAT_UA=2000
+00> BATCUR,t_ms=28693,IBAT_UA=2000
+00> BATCUR,t_ms=28798,IBAT_UA=2000
+00> BATCUR,t_ms=28903,IBAT_UA=5000
+00> BATCUR,t_ms=29009,IBAT_UA=2000
+00> BATCUR,t_ms=29114,IBAT_UA=5000
+00> BATCUR,t_ms=29219,IBAT_UA=2000
+00> BATCUR,t_ms=29527,IBAT_UA=2000
+00> BATCUR,t_ms=29633,IBAT_UA=2000
+00> BATCUR,t_ms=29738,IBAT_UA=2000
+00> BATCUR,t_ms=29843,IBAT_UA=32000
+00> BATCUR,t_ms=29948,IBAT_UA=5000
+00> BATCUR,t_ms=30054,IBAT_UA=64000
+00> BATCUR,t_ms=30159,IBAT_UA=2000
+00> BATCUR,t_ms=30264,IBAT_UA=5000
+00> [BLANK-PEAK] Sequencer loading: 85 steps total, max 85 steps/segment (single full segment), logical_points=170.
+00> [BLANK-PEAK] Triggering scan now; RTT CSV will print after all segments finalize.
+00> BATCUR,t_ms=30370,IBAT_UA=15000
+00> BATCUR,t_ms=30472,IBAT_UA=11000
+00> [BLANK-PEAK] Segment 1..85/85 loaded: len=357 words, scan=709 ms, final segment with safe-idle tail.
+00> [AD5941] SEQ finish work scheduled in 759 ms, ret=1.
+00> BATCUR,t_ms=30573,IBAT_UA=31000
+00> BATCUR,t_ms=30679,IBAT_UA=32000
+00> BATCUR,t_ms=30784,IBAT_UA=11000
+00> [BLE] TX failed after retries: -12
+00> BATCUR,t_ms=30890,IBAT_UA=15000
+00> BATCUR,t_ms=30995,IBAT_UA=15000
+00> BATCUR,t_ms=31101,IBAT_UA=2000
+00> BATCUR,t_ms=31206,IBAT_UA=5000
+00> [AD5941] SEQ finish work entered: capture=HSTIAEXT330K, kdm_stage=0, current_total=5144.
+00> [AD5941] Sequencer capture finalized: drained_tail=5,BATCUR,t_ms=31312,IBAT_UA=15000
+00>  total=5149/32000 samples.
+00> [BLANK-PEAK] All 85 segmented SWV steps captured; extracting complete curve.
+00> [BLANK-PEAK] Extracting single-frequency SWV peak from 5149 FIFO samples.
+00> [BLANK-PEAK] Peak search window: E_WE-RE=-400..-80 mV; edge transients outside this window are ignored.
+00> [BLANK-PEAK] Delta_I polarity: DropSens-style I_forward - I_reverse.
+00> [BLANK-PEAK] TIA raw-current polarity normalized for DropSens-style/electrochemical display.
+00> BATCUR,t_ms=31417,IBAT_UA=62000
+00> [SWV-SP] Auto endpoint phase shift=-20 samples, smoothness_score=418.492 nA, mean_delta=-69.521 nA, expected=-70.187 nA, guarded_score=644.932 nA.
+00> BATCUR,t_ms=31665,IBAT_UA=5000
+00> BATCUR,t_ms=31771,IBAT_UA=2000
+00> BATCUR,t_ms=31876,IBAT_UA=11000
+00> BATCUR,t_ms=31982,IBAT_UA=31000
+00> BATCUR,t_ms=32087,IBAT_UA=62000
+00> BATCUR,t_ms=32193,IBAT_UA=2000
+00> BATCUR,t_ms=32298,IBAT_UA=62000
+00> BATCUR,t_ms=32403,IBAT_UA=2000
+00> BATCUR,t_ms=32509,IBAT_UA=5000
+00> BATCUR,t_ms=32614,IBAT_UA=5000
+00> BATCUR,t_ms=32719,IBAT_UA=2000
+00> BATCUR,t_ms=32824,IBAT_UA=2000
+00> BATCUR,t_ms=32930,IBAT_UA=5000
+00> BATCUR,t_ms=33035,IBAT_UA=5000
+00> BATCUR,t_ms=33140,IBAT_UA=7000
+00> BATCUR,t_ms=33245,IBAT_UA=5000
+00> BATCUR,t_ms=33351,IBAT_UA=2000
+00> BATCUR,t_ms=33456,IBAT_UA=2000
+00> BATCUR,t_ms=33994,IBAT_UA=2000
+00> BATCUR,t_ms=34099,IBAT_UA=2000
+00> BATCUR,t_ms=34204,IBAT_UA=2000
+00> BATCUR,t_ms=34310,IBAT_UA=7000
+00> BATCUR,t_ms=34415,IBAT_UA=17000
+00> [DUMMY-SWV] Ohmic response summary: n=81 mean_delta=69.545 nA sd_delta=3.455 nA expected_delta=70.187 nA, error=0.91%
+00> BATCUR,t_ms=34520,IBAT_UA=62000
+00> [AD5941] HSTIAEXT330K capture complete: 5149 samples stored in MCU RAM.
+00> [AD5941] HSTIAEXT330K avg=-223.475 nA, min=-487.254 nA, max=36.202 nA
+00> [REPEAT] Run 1/5 complete. Waiting 5000 ms before run 2/5, ret=1.
+00> [AD5941] HS switch matrix opened.
+00> [AD5941] Safe idle/high-Z entered after SEQ: SW matrix open, LPTIA/HSTIA opened, LPDAC/LPPA/TIA/ADC off.
+00> EVT,HIGHZ,SW_MATRIX_OPEN=1,LPDAC_OFF=1,LPTIA_OPEN=1,HSTIA_OPEN=1,ADC_OFF=1
+00> BATCUR,t_ms=34625,IBAT_UA=2000
+00> BATCUR,t_ms=34731,IBAT_UA=2000
+00> BATCUR,t_ms=34836,IBAT_UA=5000
+00> BATCUR,t_ms=34941,IBAT_UA=7000
+00> BATCUR,t_ms=35047,IBAT_UA=5000
+00> BATCUR,t_ms=35152,IBAT_UA=63000
+00> BATCUR,t_ms=35257,IBAT_UA=2000
+00> BATCUR,t_ms=35362,IBAT_UA=64000
+00> BATCUR,t_ms=35468,IBAT_UA=16000
+00> BATCUR,t_ms=35573,IBAT_UA=31000
+00> BATCUR,t_ms=35678,IBAT_UA=2000
+00> BATCUR,t_ms=35783,IBAT_UA=2000
+00> BATCUR,t_ms=36092,IBAT_UA=16000
+00> BATCUR,t_ms=36197,IBAT_UA=11000
+00> BATCUR,t_ms=36302,IBAT_UA=66000
+00> BATCUR,t_ms=36407,IBAT_UA=2000
+00> BATCUR,t_ms=36513,IBAT_UA=2000
+00> BATCUR,t_ms=36618,IBAT_UA=2000
+00> BATCUR,t_ms=36723,IBAT_UA=15000
+00> BATCUR,t_ms=36828,IBAT_UA=31000
+00> BATCUR,t_ms=36933,IBAT_UA=5000
+00> BATCUR,t_ms=37039,IBAT_UA=2000
+00> BATCUR,t_ms=37144,IBAT_UA=2000
+00> BATCUR,t_ms=37249,IBAT_UA=7000
+00> BATCUR,t_ms=37354,IBAT_UA=32000
+00> BATCUR,t_ms=37460,IBAT_UA=5000
+00> BATCUR,t_ms=37565,IBAT_UA=2000
+00> BATCUR,t_ms=37670,IBAT_UA=2000
+00> BATCUR,t_ms=37775,IBAT_UA=7000
+00> BATCUR,t_ms=37881,IBAT_UA=16000
+00> BATCUR,t_ms=38189,IBAT_UA=31000
+00> BATCUR,t_ms=38294,IBAT_UA=2000
+00> BATCUR,t_ms=38399,IBAT_UA=5000
+00> BATCUR,t_ms=38505,IBAT_UA=5000
+00> BATCUR,t_ms=38610,IBAT_UA=2000
+00> BATCUR,t_ms=38715,IBAT_UA=7000
+00> BATCUR,t_ms=38820,IBAT_UA=62000
+00> BATCUR,t_ms=38926,IBAT_UA=2000
+00> BATCUR,t_ms=39031,IBAT_UA=5000
+00> BATCUR,t_ms=39136,IBAT_UA=33000
+00> BATCUR,t_ms=39242,IBAT_UA=32000
+00> BATCUR,t_ms=39347,IBAT_UA=2000
+00> BATCUR,t_ms=39452,IBAT_UA=2000
+00> BATCUR,t_ms=39557,IBAT_UA=2000
+00> 
+00> [REPEAT] Starting dummy run 2/5.
+00> [BLANK-PEAK] Dummy-cell validation SWV selected.
+00> [BLANK-PEAK] Profile=5MV (5.37mV full), f=120Hz, half=4166us, expected_scan=709 ms, E_WE-RE window=-450mV..0mV, step=0x0A, pulse=+/-0x41, logical_points=85.
+00> [BLANK-PEAK] Polarity note: WE(SE0)=VZERO, RE(RE0)=VBIAS, so E_WE-RE = VZERO - VBIAS.
+00> [BLANK-PEAK] Path: HSTIA external AIN2 330k, RTIA=330000 ohm, CTIA=4pF, LPPA/LPDAC waveform, Notch bypassed.
+00> [BLANK-PEAK] Purpose: compare external thin-film RTIA options against internal HSTIA 160k.
+00> [BLANK-PEAK] Quiet time: hold start potential for 3000 ms before FIFO/Sequencer scan.
+00> [BLANK-PEAK] Extended smoothing output enabled: avg3, smooth5, smooth7, SG5.
+00> [DUMMY-SWV] Dummy resistor=995000 ohm, expected |Delta_I| from +/-pulse = 70.187 nA.
+00> [SWV-SP] Phase guard enabled: expected dummy Delta_I=-70.187 nA for 995000 ohm dummy.
+00> [AD5941] SWV-KDM fast filter configured: SINC2 output, Notch bypassed, OSR=22.
+00> [AD5941] SRAM allocated for sequencer test: FIFO=2KB, SEQ=4KB.
+00> [AD5941] External-HSTIA switch matrix configured for HSTIA external AIN2 330k: D/P/N=open, T=TRTIA|external RTIA pin|SE0LOAD, TSW=0x00000114.
+00> [AD5941] HSTIA external AIN2 330k configured: RTIA=330000 ohm, CTIA=4pF, LPDACCON0=0x00000021, LPTIACON0=0x00001001, HSTIACON=0x00000001, HSRTIACON=0x00000048, DE0RESCON=0x00000095, TSW=0x00000114, LPTIASW0=0x00000094.
+00> [BLANK-PEAK] Holding start potential before scan: dac=0xB46 E_WE-RE=-450.173 mV, quiet=3000 ms.
+00> BATCUR,t_ms=39662,IBAT_UA=2000
+00> BATCUR,t_ms=39768,IBAT_UA=5000
+00> BATCUR,t_ms=39873,IBAT_UA=5000
+00> BATCUR,t_ms=39978,IBAT_UA=3000
+00> BATCUR,t_ms=40286,IBAT_UA=2000
+00> BATCUR,t_ms=40391,IBAT_UA=11000
+00> BATCUR,t_ms=40497,IBAT_UA=7000
+00> BATCUR,t_ms=40602,IBAT_UA=2000
+00> BATCUR,t_ms=40707,IBAT_UA=5000
+00> BATCUR,t_ms=40813,IBAT_UA=32000
+00> BATCUR,t_ms=40918,IBAT_UA=2000
+00> BATCUR,t_ms=41023,IBAT_UA=32000
+00> BATCUR,t_ms=41128,IBAT_UA=2000
+00> BATCUR,t_ms=41234,IBAT_UA=5000
+00> BATCUR,t_ms=41339,IBAT_UA=6000
+00> BATCUR,t_ms=41444,IBAT_UA=5000
+00> BATCUR,t_ms=41549,IBAT_UA=32000
+00> BATCUR,t_ms=41655,IBAT_UA=15000
+00> BATCUR,t_ms=41760,IBAT_UA=5000
+00> BATCUR,t_ms=41865,IBAT_UA=5000
+00> BATCUR,t_ms=41970,IBAT_UA=33000
+00> BATCUR,t_ms=42076,IBAT_UA=5000
+00> BATCUR,t_ms=42384,IBAT_UA=7000
+00> BATCUR,t_ms=42489,IBAT_UA=5000
+00> BATCUR,t_ms=42594,IBAT_UA=11000
+00> [BLANK-PEAK] Sequencer loading: 85 steps total, max 85 steps/segment (single full segment), logical_points=170.
+00> [BLANK-PEAK] Triggering scan now; RTT CSV will print after all segments finalize.
+00> BATCUR,t_ms=42700,IBAT_UA=15000
+00> [BLANK-PEAK] Segment 1..85/85 loaded: len=357 words, scan=709 ms, final segment with safe-idle tail.
+00> [AD5941] SEQ finish work scheduled in 759 ms, ret=1.
+00> BATCUR,t_ms=42805,IBAT_UA=15000
+00> BATCUR,t_ms=42911,IBAT_UA=7000
+00> BATCUR,t_ms=43016,IBAT_UA=11000
+00> BATCUR,t_ms=43122,IBAT_UA=35000
+00> BATCUR,t_ms=43227,IBAT_UA=33000
+00> BATCUR,t_ms=43332,IBAT_UA=32000
+00> BATCUR,t_ms=43438,IBAT_UA=62000
+00> [AD5941] SEQ finish work entered: capture=HSTIAEXT330K, kdm_stage=0, current_total=5149.
+00> [AD5941] Sequencer capture finalized: drained_tail=0, total=5149/32000 samples.
+00> [BLANK-PEAK] All 85 segmented SWV steps captured; extracting complete curve.
+00> [BLANK-PEAK] Extracting single-frequency SWV peak from 5149 FIFO samples.
+00> [BLANK-PEAK] Peak search window: E_WE-RE=-400..-80 mV; edge transients outside this window are iBATCUR,t_ms=43543,IBAT_UA=2000
+00> gnored.
+00> [BLANK-PEAK] Delta_I polarity: DropSens-style I_forward - I_reverse.
+00> [BLANK-PEAK] TIA raw-current polarity normalized for DropSens-style/electrochemical display.
+00> BATCUR,t_ms=43649,IBAT_UA=11000
+00> [SWV-SP] Auto endpoint phase shift=-20 samples, smoothness_score=437.233 nA, mean_delta=-69.537 nA, expected=-70.187 nA, guarded_score=658.233 nA.
+00> BATCUR,t_ms=43754,IBAT_UA=2000
+00> BATCUR,t_ms=43859,IBAT_UA=2000
+00> BATCUR,t_ms=43965,IBAT_UA=62000
+00> BATCUR,t_ms=44070,IBAT_UA=64000
+00> BATCUR,t_ms=44176,IBAT_UA=2000
+00> BATCUR,t_ms=44714,IBAT_UA=62000
+00> BATCUR,t_ms=44820,IBAT_UA=11000
+00> BATCUR,t_ms=44925,IBAT_UA=31000
+00> BATCUR,t_ms=45030,IBAT_UA=11000
+00> BATCUR,t_ms=45136,IBAT_UA=0
+00> BATCUR,t_ms=45241,IBAT_UA=5000
+00> BATCUR,t_ms=45347,IBAT_UA=7000
+00> BATCUR,t_ms=45453,IBAT_UA=5000
+00> BATCUR,t_ms=45558,IBAT_UA=2000
+00> BATCUR,t_ms=45663,IBAT_UA=32000
+00> BATCUR,t_ms=45769,IBAT_UA=5000
+00> BATCUR,t_ms=45874,IBAT_UA=5000
+00> BATCUR,t_ms=45979,IBAT_UA=5000
+00> BATCUR,t_ms=46084,IBAT_UA=2000
+00> BATCUR,t_ms=46190,IBAT_UA=5000
+00> BATCUR,t_ms=46295,IBAT_UA=33000
+00> BATCUR,t_ms=46400,IBAT_UA=2000
+00> BATCUR,t_ms=46505,IBAT_UA=2000
+00> [DUMMY-SWV] Ohmic response summary: n=81 mean_delta=69.557 nA sd_delta=3.617 nA expected_delta=70.187 nA, error=0.89%
+00> [AD5941] HSTIAEXT330K capture complete: 5149 samples stored in MCU RAM.
+00> [AD5941] HSTIAEXT330K avg=-223.491 nA, min=-487.481 nA, max=36.428 nA
+00> [REPEAT] Run 2/5 complete. Waiting 5000 ms before run 3/5, ret=1.
+00> [AD5941] HS switch matrix opened.
+00> [AD5941] Safe idle/high-Z entered after SEQ: SW matrix open, LPTIA/HSTIA opened, LPDAC/LPPA/TIA/ADC off.
+00> EVT,HIGHZ,SW_MATRIX_OPEN=1,LPDAC_OFF=1,LPTIA_OPEN=1,HSTIA_OPEN=1,ADC_OFF=1
+00> BATCUR,t_ms=46813,IBAT_UA=2000
+00> BATCUR,t_ms=46919,IBAT_UA=11000
+00> BATCUR,t_ms=47024,IBAT_UA=33000
+00> BATCUR,t_ms=47129,IBAT_UA=16000
+00> BATCUR,t_ms=47234,IBAT_UA=62000
+00> BATCUR,t_ms=47340,IBAT_UA=2000
+00> BATCUR,t_ms=47445,IBAT_UA=32000
+00> BATCUR,t_ms=47550,IBAT_UA=32000
+00> BATCUR,t_ms=47656,IBAT_UA=7000
+00> BATCUR,t_ms=47761,IBAT_UA=5000
+00> BATCUR,t_ms=47866,IBAT_UA=2000
+00> BATCUR,t_ms=47971,IBAT_UA=64000
+00> BATCUR,t_ms=48077,IBAT_UA=2000
+00> BATCUR,t_ms=48182,IBAT_UA=5000
+00> BATCUR,t_ms=48287,IBAT_UA=5000
+00> BATCUR,t_ms=48392,IBAT_UA=2000
+00> BATCUR,t_ms=48498,IBAT_UA=62000
+00> BATCUR,t_ms=48603,IBAT_UA=33000
+00> BATCUR,t_ms=48911,IBAT_UA=15000
+00> BATCUR,t_ms=49016,IBAT_UA=5000
+00> BATCUR,t_ms=49121,IBAT_UA=5000
+00> BATCUR,t_ms=49227,IBAT_UA=2000
+00> BATCUR,t_ms=49332,IBAT_UA=15000
+00> BATCUR,t_ms=49437,IBAT_UA=7000
+00> BATCUR,t_ms=49543,IBAT_UA=5000
+00> BATCUR,t_ms=49648,IBAT_UA=63000
+00> BATCUR,t_ms=49753,IBAT_UA=2000
+00> BATCUR,t_ms=49858,IBAT_UA=33000
+00> BATCUR,t_ms=49964,IBAT_UA=33000
+00> BATCUR,t_ms=50069,IBAT_UA=5000
+00> BATCUR,t_ms=50174,IBAT_UA=2000
+00> BATCUR,t_ms=50279,IBAT_UA=31000
+00> BATCUR,t_ms=50385,IBAT_UA=11000
+00> BATCUR,t_ms=50490,IBAT_UA=5000
+00> BATCUR,t_ms=50595,IBAT_UA=2000
+00> BATCUR,t_ms=50701,IBAT_UA=2000
+00> BATCUR,t_ms=51009,IBAT_UA=35000
+00> BATCUR,t_ms=51114,IBAT_UA=32000
+00> BATCUR,t_ms=51219,IBAT_UA=15000
+00> BATCUR,t_ms=51325,IBAT_UA=2000
+00> BATCUR,t_ms=51430,IBAT_UA=5000
+00> BATCUR,t_ms=51535,IBAT_UA=5000
+00> BATCUR,t_ms=51640,IBAT_UA=2000
+00> BATCUR,t_ms=51746,IBAT_UA=7000
+00> 
+00> [REPEAT] Starting dummy run 3/5.
+00> [BLANK-PEAK] Dummy-cell validation SWV selected.
+00> [BLANK-PEAK] Profile=5MV (5.37mV full), f=120Hz, half=4166us, expected_scan=709 ms, E_WE-RE window=-450mV..0mV, step=0x0A, pulse=+/-0x41, logical_points=85.
+00> [BLANK-PEAK] Polarity note: WE(SE0)=VZERO, RE(RE0)=VBIAS, so E_WE-RE = VZERO - VBIAS.
+00> [BLANK-PEAK] Path: HSTIA external AIN2 330k, RTIA=330000 ohm, CTIA=4pF, LPPA/LPDAC waveform, Notch bypassed.
+00> [BLANK-PEAK] Purpose: compare external thin-film RTIA options against internal HSTIA 160k.
+00> [BLANK-PEAK] Quiet time: hold start potential for 3000 ms before FIFO/Sequencer scan.
+00> [BLANK-PEAK] Extended smoothing output enabled: avg3, smooth5, smooth7, SG5.
+00> [DUMMY-SWV] Dummy resistor=995000 ohm, expected |Delta_I| from +/-pulse = 70.187 nA.
+00> [SWV-SP] Phase guard enabled: expected dummy Delta_I=-70.187 nA for 995000 ohm dummy.
+00> [AD5941] SWV-KDM fast filter configured: SINC2 output, Notch bypassed, OSR=22.
+00> [AD5941] SRAM allocated for sequencer test: FIFO=2KB, SEQ=4KB.
+00> [AD5941] External-HSTIA switch matrix configured for HSTIA external AIN2 330k: D/P/N=open, T=TRTIA|external RTIA pin|SE0LOAD, TSW=0x00000114.
+00> [AD5941] HSTIA external AIN2 330k configured: RTIA=330000 ohm, CTIA=4pF, LPDACCON0=0x00000021, LPTIACON0=0x00001001, HSTIACON=0x00000001, HSRTIACON=0x00000048, DE0RESCON=0x00000095, TSW=0x00000114, LPTIASW0=0x00000094.
+00> [BLANK-PEAK] Holding start potential before scan: dac=0xB46 E_WE-RE=-450.173 mV, quiet=3000 ms.
+00> BATCUR,t_ms=51851,IBAT_UA=2000
+00> BATCUR,t_ms=51956,IBAT_UA=6000
+00> BATCUR,t_ms=52061,IBAT_UA=11000
+00> BATCUR,t_ms=52167,IBAT_UA=32000
+00> BATCUR,t_ms=52272,IBAT_UA=11000
+00> BATCUR,t_ms=52377,IBAT_UA=2000
+00> BATCUR,t_ms=52482,IBAT_UA=2000
+00> BATCUR,t_ms=52588,IBAT_UA=11000
+00> BATCUR,t_ms=52693,IBAT_UA=11000
+00> BATCUR,t_ms=52798,IBAT_UA=31000
+00> BATCUR,t_ms=53107,IBAT_UA=5000
+00> BATCUR,t_ms=53212,IBAT_UA=5000
+00> BATCUR,t_ms=53317,IBAT_UA=5000
+00> BATCUR,t_ms=53422,IBAT_UA=18000
+00> BATCUR,t_ms=53528,IBAT_UA=32000
+00> BATCUR,t_ms=53633,IBAT_UA=2000
+00> BATCUR,t_ms=53738,IBAT_UA=5000
+00> BATCUR,t_ms=53843,IBAT_UA=6000
+00> BATCUR,t_ms=53949,IBAT_UA=33000
+00> BATCUR,t_ms=54054,IBAT_UA=15000
+00> BATCUR,t_ms=54159,IBAT_UA=5000
+00> BATCUR,t_ms=54264,IBAT_UA=3000
+00> BATCUR,t_ms=54370,IBAT_UA=5000
+00> BATCUR,t_ms=54475,IBAT_UA=2000
+00> BATCUR,t_ms=54580,IBAT_UA=7000
+00> BATCUR,t_ms=54685,IBAT_UA=5000
+00> [BLANK-PEAK] SequencBATCUR,t_ms=54791,IBAT_UA=5000
+00> er loading: 85 steps total, max 85 steps/segment (single full segment), logical_points=170.
+00> [BLANK-PEAK] Triggering scan now; RTT CSV will print after all segments finalize.
+00> BATCUR,t_ms=54896,IBAT_UA=26000
+00> [BLANK-PEAK] Segment 1..85/85 loaded: len=357 words, scan=709 ms, final segment with safe-idle tail.
+00> [AD5941] SEQ finish work scheduled in 759 ms, ret=1.
+00> BATCUR,t_ms=55437,IBAT_UA=11000
+00> BATCUR,t_ms=55543,IBAT_UA=33000
+00> BATCUR,t_ms=55648,IBAT_UA=7000
+00> [AD5941] SEQ finish work entered: capture=HSTIAEXT330K, kdm_stage=0, current_total=5149.
+00> [AD5941] Sequencer capture finalized: drained_tail=0, total=5149/32000 samples.
+00> [BLANK-PEAK] All 85 segmented SWV steps captured; extracting complete curve.
+00> [BLANK-PEAK] Extracting single-frequency SWV peak from 5149 FIFO samples.
+00> [BLANK-PEAK] Peak search window: E_WE-RE=-400..-80 mV; edge transients outside this window are ignored.
+00> [BLANK-PEAK] Delta_I polarity: DropSens-style I_forward - I_reverse.
+00> [BLANK-PEAK] TIA raw-current polarity normalized for DropSens-style/electrochemical display.
+00> BATCUR,t_ms=55754,IBAT_UA=2000
+00> BATCUR,t_ms=55859,IBAT_UA=15000
+00> [SWV-SP] Auto endpoint phase shift=-12 samples, smoothness_score=413.688 nA, mean_delta=-69.417 nA, expected=-70.187 nA, guarded_score=675.488 nA.
+00> BATCUR,t_ms=55964,IBAT_UA=16000
+00> BATCUR,t_ms=56070,IBAT_UA=63000
+00> BATCUR,t_ms=56176,IBAT_UA=2000
+00> BATCUR,t_ms=56281,IBAT_UA=32000
+00> BATCUR,t_ms=56387,IBAT_UA=15000
+00> BATCUR,t_ms=56492,IBAT_UA=11000
+00> BATCUR,t_ms=56598,IBAT_UA=15000
+00> BATCUR,t_ms=56703,IBAT_UA=2000
+00> BATCUR,t_ms=56808,IBAT_UA=2000
+00> BATCUR,t_ms=56914,IBAT_UA=5000
+00> BATCUR,t_ms=57019,IBAT_UA=15000
+00> BATCUR,t_ms=57124,IBAT_UA=32000
+00> BATCUR,t_ms=57229,IBAT_UA=5000
+00> BATCUR,t_ms=57538,IBAT_UA=2000
+00> BATCUR,t_ms=57643,IBAT_UA=35000
+00> BATCUR,t_ms=57748,IBAT_UA=7000
+00> BATCUR,t_ms=57854,IBAT_UA=5000
+00> BATCUR,t_ms=57959,IBAT_UA=2000
+00> BATCUR,t_ms=58064,IBAT_UA=2000
+00> BATCUR,t_ms=58170,IBAT_UA=12000
+00> BATCUR,t_ms=58276,IBAT_UA=15000
+00> BATCUR,t_ms=58381,IBAT_UA=2000
+00> BATCUR,t_ms=58487,IBAT_UA=2000
+00> BATCUR,t_ms=58592,IBAT_UA=16000
+00> BATCUR,t_ms=58697,IBAT_UA=62000
+00> [DUMMY-SWV] Ohmic response summary: n=81 mean_delta=69.485 nA sd_delta=3.463 nA expected_delta=70.187 nA, error=1.00%
+00> BATCUR,t_ms=58803,IBAT_UA=2000
+00> [AD5941] HSTIAEXT330K capture complete: 5149 samples stored in MCU RAM.
+00> [AD5941] HSTIAEXT330K avg=-223.429 nA, min=-487.254 nA, max=39.030 nA
+00> [REPEAT] Run 3/5 complete. Waiting 5000 ms before run 4/5, ret=1.
+00> [AD5941] HS switch matrix opened.
+00> [AD5941] Safe idle/high-Z entered after SEQ: SW matrix open, LPTIA/HSTIA opened, LPDAC/LPPA/TIA/ADC off.
+00> EVT,HIGHZ,SW_MATRIX_OPEN=1,LPDAC_OFF=1,LPTIA_OPEN=1,HSTIA_OPEN=1,ADC_OFF=1
+00> BATCUR,t_ms=58908,IBAT_UA=15000
+00> BATCUR,t_ms=59014,IBAT_UA=15000
+00> BATCUR,t_ms=59119,IBAT_UA=2000
+00> BATCUR,t_ms=59224,IBAT_UA=2000
+00> BATCUR,t_ms=59329,IBAT_UA=2000
+00> BATCUR,t_ms=59638,IBAT_UA=15000
+00> BATCUR,t_ms=59743,IBAT_UA=5000
+00> BATCUR,t_ms=59848,IBAT_UA=16000
+00> BATCUR,t_ms=59953,IBAT_UA=2000
+00> BATCUR,t_ms=60058,IBAT_UA=2000
+00> BATCUR,t_ms=60164,IBAT_UA=2000
+00> BATCUR,t_ms=60269,IBAT_UA=11000
+00> BATCUR,t_ms=60374,IBAT_UA=11000
+00> BATCUR,t_ms=60480,IBAT_UA=2000
+00> BATCUR,t_ms=60585,IBAT_UA=2000
+00> BATCUR,t_ms=60690,IBAT_UA=2000
+00> BATCUR,t_ms=60795,IBAT_UA=5000
+00> BATCUR,t_ms=60901,IBAT_UA=16000
+00> BATCUR,t_ms=61006,IBAT_UA=2000
+00> BATCUR,t_ms=61111,IBAT_UA=63000
+00> BATCUR,t_ms=61216,IBAT_UA=3000
+00> BATCUR,t_ms=61322,IBAT_UA=2000
+00> BATCUR,t_ms=61427,IBAT_UA=23000
+00> BATCUR,t_ms=61735,IBAT_UA=2000
+00> BATCUR,t_ms=61840,IBAT_UA=63000
+00> BATCUR,t_ms=61946,IBAT_UA=2000
+00> BATCUR,t_ms=62051,IBAT_UA=11000
+00> BATCUR,t_ms=62156,IBAT_UA=16000
+00> BATCUR,t_ms=62262,IBAT_UA=2000
+00> BATCUR,t_ms=62367,IBAT_UA=63000
+00> BATCUR,t_ms=62472,IBAT_UA=32000
+00> BATCUR,t_ms=62577,IBAT_UA=31000
+00> BATCUR,t_ms=62683,IBAT_UA=33000
+00> BATCUR,t_ms=62788,IBAT_UA=63000
+00> BATCUR,t_ms=62893,IBAT_UA=2000
+00> BATCUR,t_ms=62998,IBAT_UA=7000
+00> BATCUR,t_ms=63104,IBAT_UA=31000
+00> BATCUR,t_ms=63209,IBAT_UA=2000
+00> BATCUR,t_ms=63314,IBAT_UA=63000
+00> BATCUR,t_ms=63420,IBAT_UA=2000
+00> BATCUR,t_ms=63525,IBAT_UA=32000
+00> BATCUR,t_ms=63833,IBAT_UA=11000
+00> 
+00> [REPEAT] Starting dummy run 4/5.
+00> [BLANK-PEAK] Dummy-cell validation SWV selected.
+00> [BLANK-PEAK] Profile=5MV (5.37mV full), f=120Hz, half=4166us, expected_scan=709 ms, E_WE-RE window=-450mV..0mV, step=0x0A, pulse=+/-0x41, logical_points=85.
+00> [BLANK-PEAK] Polarity note: WE(SE0)=VZERO, RE(RE0)=VBIAS, so E_WE-RE = VZERO - VBIAS.
+00> [BLANK-PEAK] Path: HSTIA external AIN2 330k, RTIA=330000 ohm, CTIA=4pF, LPPA/LPDAC waveform, Notch bypassed.
+00> [BLANK-PEAK] Purpose: compare external thin-film RTIA options against internal HSTIA 160k.
+00> [BLANK-PEAK] Quiet time: hold start potential for 3000 ms before FIFO/Sequencer scan.
+00> [BLANK-PEAK] Extended smoothing output enabled: avg3, smooth5, smooth7, SG5.
+00> [DUMMY-SWV] Dummy resistor=995000 ohm, expected |Delta_I| from +/-pulse = 70.187 nA.
+00> [SWV-SP] Phase guard enabled: expected dummy Delta_I=-70.187 nA for 995000 ohm dummy.
+00> [AD5941] SWV-KDM fast filter configured: SINC2 output, Notch bypassed, OSR=22.
+00> [AD5941] SRAM allocated for sequencer test: FIFO=2KB, SEQ=4KB.
+00> [AD5941] External-HSTIA switch matrix configured for HSTIA external AIN2 330k: D/P/N=open, T=TRTIA|external RTIA pin|SE0LOAD, TSW=0x00000114.
+00> [AD5941] HSTIA external AIN2 330k configured: RTIA=330000 ohm, CTIA=4pF, LPDACCON0=0x00000021, LPTIACON0=0x00001001, HSTIACON=0x00000001, HSRTIACON=0x00000048, DE0RESCON=0x00000095, TSW=0x00000114, LPTIASW0=0x00000094.
+00> [BLANK-PEAK] Holding start potential before scan: dac=0xB46 E_WE-RE=-450.173 mV, quiet=3000 ms.
+00> BATCUR,t_ms=63938,IBAT_UA=5000
+00> BATCUR,t_ms=64044,IBAT_UA=5000
+00> BATCUR,t_ms=64149,IBAT_UA=6000
+00> BATCUR,t_ms=64254,IBAT_UA=5000
+00> BATCUR,t_ms=64359,IBAT_UA=33000
+00> BATCUR,t_ms=64464,IBAT_UA=15000
+00> BATCUR,t_ms=64570,IBAT_UA=64000
+00> BATCUR,t_ms=64675,IBAT_UA=5000
+00> BATCUR,t_ms=64780,IBAT_UA=5000
+00> BATCUR,t_ms=64886,IBAT_UA=6000
+00> BATCUR,t_ms=64991,IBAT_UA=16000
+00> BATCUR,t_ms=65096,IBAT_UA=2000
+00> BATCUR,t_ms=65201,IBAT_UA=23000
+00> BATCUR,t_ms=65307,IBAT_UA=33000
+00> BATCUR,t_ms=65412,IBAT_UA=64000
+00> BATCUR,t_ms=65517,IBAT_UA=6000
+00> BATCUR,t_ms=65623,IBAT_UA=5000
+00> BATCUR,t_ms=66095,IBAT_UA=62000
+00> BATCUR,t_ms=66200,IBAT_UA=5000
+00> BATCUR,t_ms=66306,IBAT_UA=11000
+00> BATCUR,t_ms=66411,IBAT_UA=5000
+00> BATCUR,t_ms=66516,IBAT_UA=63000
+00> BATCUR,t_ms=66621,IBAT_UA=5000
+00> BATCUR,t_ms=66727,IBAT_UA=11000
+00> BATCUR,t_ms=66832,IBAT_UA=32000
+00> [BLANK-PEAK] Sequencer loading: 85 steps total, max 85 steps/segment (single full segment), logical_points=170.
+00> [BLANK-PEAK] Triggering scan now; RTT CSV will print after all segments finalize.
+00> BATCUR,t_ms=66937,IBAT_UA=4000
+00> BATCUR,t_ms=67043,IBAT_UA=15000
+00> [BLANK-PEAK] Segment 1..85/85 loaded: len=357 words, scan=709 ms, final segment with safe-idle tail.
+00> [AD5941] SEQ finish work scheduled in 759 ms, ret=1.
+00> BATCUR,t_ms=67148,IBAT_UA=31000
+00> BATCUR,t_ms=67254,IBAT_UA=2000
+00> BATCUR,t_ms=67359,IBAT_UA=1000
+00> BATCUR,t_ms=67464,IBAT_UA=7000
+00> BATCUR,t_ms=67570,IBAT_UA=2000
+00> BATCUR,t_ms=67676,IBAT_UA=5000
+00> BATCUR,t_ms=67781,IBAT_UA=5000
+00> [AD5941] SEQ finish work entered: capture=HSTIAEXT330K, kdm_stage=0, current_total=5149.
+00> [AD5941] Sequencer capture finalized: drained_tail=0, total=5149/32000 samples.
+00> [BLANK-PEAK] All 85 segmented SWV steps captured; extracting complete curve.
+00> [BLANK-PEAK] Extracting single-frequency SWV peak from 5149 FIFO samples.
+00> [BLANK-PEAK] Peak search window: E_WE-RE=-400..-80 mV; edge transients outside this window are ignored.
+00> [BLANK-PEAK] Delta_I polarity: DropSens-style I_forward - I_reverse.
+00> [BLANK-PEAK] TIA raw-current polarity normalized for DropSens-style/electrochemical display.
+00> BATCUR,t_ms=67886,IBAT_UA=2000
+00> [SWV-SP] Auto endpoint phase shift=0 samples, smoothness_score=365.845 nA, mean_delta=-69.455 nA, expected=-70.187 nA, guarded_score=614.725 nA.
+00> BATCUR,t_ms=68195,IBAT_UA=19000
+00> BATCUR,t_ms=68300,IBAT_UA=62000
+00> BATCUR,t_ms=68406,IBAT_UA=5000
+00> BATCUR,t_ms=68511,IBAT_UA=2000
+00> BATCUR,t_ms=68616,IBAT_UA=2000
+00> BATCUR,t_ms=68722,IBAT_UA=32000
+00> BATCUR,t_ms=68827,IBAT_UA=5000
+00> BATCUR,t_ms=68932,IBAT_UA=2000
+00> BATCUR,t_ms=69038,IBAT_UA=2000
+00> BATCUR,t_ms=69143,IBAT_UA=2000
+00> BATCUR,t_ms=69248,IBAT_UA=7000
+00> BATCUR,t_ms=69353,IBAT_UA=2000
+00> BATCUR,t_ms=69459,IBAT_UA=2000
+00> BATCUR,t_ms=69564,IBAT_UA=2000
+00> BATCUR,t_ms=69669,IBAT_UA=2000
+00> BATCUR,t_ms=69774,IBAT_UA=62000
+00> BATCUR,t_ms=69880,IBAT_UA=2000
+00> BATCUR,t_ms=69985,IBAT_UA=2000
+00> BATCUR,t_ms=70293,IBAT_UA=2000
+00> BATCUR,t_ms=70399,IBAT_UA=2000
+00> BATCUR,t_ms=70504,IBAT_UA=5000
+00> BATCUR,t_ms=70609,IBAT_UA=11000
+00> BATCUR,t_ms=70715,IBAT_UA=31000
+00> BATCUR,t_ms=70820,IBAT_UA=5000
+00> BATCUR,t_ms=70925,IBAT_UA=2000
+00> BATCUR,t_ms=71030,IBAT_UA=62000
+00> [DUMMY-SWV] Ohmic response summary: n=81 mean_delta=69.414 nA sd_delta=3.084 nA expected_delta=70.187 nA, error=1.10%
+00> BATCUR,t_ms=71136,IBAT_UA=5000
+00> [AD5941] HSTIAEXT330K capture complete: 5149 samples stored in MCU RAM.
+00> [AD5941] HSTIAEXT330K avg=-223.454 nA, min=-482.050 nA, max=35.184 nA
+00> [REPEAT] Run 4/5 complete. Waiting 5000 ms before run 5/5, ret=1.
+00> [AD5941] HS switch matrix opened.
+00> [AD5941] Safe idle/high-Z entered after SEQ: SW matrix open, LPTIA/HSTIA opened, LPDAC/LPPA/TIA/ADC off.
+00> EVT,HIGHZ,SW_MATRIX_OPEN=1,LPDAC_OFF=1,LPTIA_OPEN=1,HSTIA_OPEN=1,ADC_OFF=1
+00> BATCUR,t_ms=71241,IBAT_UA=2000
+00> BATCUR,t_ms=71346,IBAT_UA=2000
+00> BATCUR,t_ms=71451,IBAT_UA=2000
+00> BATCUR,t_ms=71557,IBAT_UA=11000
+00> BATCUR,t_ms=71662,IBAT_UA=5000
+00> BATCUR,t_ms=71767,IBAT_UA=5000
+00> BATCUR,t_ms=71872,IBAT_UA=2000
+00> BATCUR,t_ms=71978,IBAT_UA=2000
+00> BATCUR,t_ms=72083,IBAT_UA=62000
+00> BATCUR,t_ms=72391,IBAT_UA=5000
+00> BATCUR,t_ms=72496,IBAT_UA=2000
+00> BATCUR,t_ms=72602,IBAT_UA=31000
+00> BATCUR,t_ms=72707,IBAT_UA=2000
+00> BATCUR,t_ms=72812,IBAT_UA=2000
+00> BATCUR,t_ms=72917,IBAT_UA=2000
+00> BATCUR,t_ms=73023,IBAT_UA=5000
+00> BATCUR,t_ms=73128,IBAT_UA=35000
+00> BATCUR,t_ms=73233,IBAT_UA=63000
+00> BATCUR,t_ms=73338,IBAT_UA=2000
+00> BATCUR,t_ms=73444,IBAT_UA=2000
+00> BATCUR,t_ms=73549,IBAT_UA=5000
+00> BATCUR,t_ms=73654,IBAT_UA=7000
+00> BATCUR,t_ms=73759,IBAT_UA=62000
+00> BATCUR,t_ms=73865,IBAT_UA=2000
+00> BATCUR,t_ms=73970,IBAT_UA=5000
+00> BATCUR,t_ms=74075,IBAT_UA=2000
+00> BATCUR,t_ms=74180,IBAT_UA=5000
+00> BATCUR,t_ms=74489,IBAT_UA=2000
+00> BATCUR,t_ms=74594,IBAT_UA=2000
+00> BATCUR,t_ms=74699,IBAT_UA=2000
+00> BATCUR,t_ms=74804,IBAT_UA=2000
+00> BATCUR,t_ms=74910,IBAT_UA=32000
+00> BATCUR,t_ms=75015,IBAT_UA=35000
+00> BATCUR,t_ms=75120,IBAT_UA=63000
+00> BATCUR,t_ms=75225,IBAT_UA=5000
+00> BATCUR,t_ms=75331,IBAT_UA=5000
+00> BATCUR,t_ms=75436,IBAT_UA=15000
+00> BATCUR,t_ms=75541,IBAT_UA=5000
+00> BATCUR,t_ms=75646,IBAT_UA=2000
+00> BATCUR,t_ms=75752,IBAT_UA=2000
+00> BATCUR,t_ms=75857,IBAT_UA=5000
+00> BATCUR,t_ms=75962,IBAT_UA=16000
+00> BATCUR,t_ms=76067,IBAT_UA=62000
+00> BATCUR,t_ms=76173,IBAT_UA=5000
+00> 
+00> [REPEAT] Starting dummy run 5/5.
+00> [BLANK-PEAK] Dummy-cell validation SWV selected.
+00> [BLANK-PEAK] Profile=5MV (5.37mV full), f=120Hz, half=4166us, expected_scan=709 ms, E_WE-RE window=-450mV..0mV, step=0x0A, pulse=+/-0x41, logical_points=85.
+00> [BLANK-PEAK] Polarity note: WE(SE0)=VZERO, RE(RE0)=VBIAS, so E_WE-RE = VZERO - VBIAS.
+00> [BLANK-PEAK] Path: HSTIA external AIN2 330k, RTIA=330000 ohm, CTIA=4pF, LPPA/LPDAC waveform, Notch bypassed.
+00> [BLANK-PEAK] Purpose: compare external thin-film RTIA options against internal HSTIA 160k.
+00> [BLANK-PEAK] Quiet time: hold start potential for 3000 ms before FIFO/Sequencer scan.
+00> [BLANK-PEAK] Extended smoothing output enabled: avg3, smooth5, smooth7, SG5.
+00> [DUMMY-SWV] Dummy resistor=995000 ohm, expected |Delta_I| from +/-pulse = 70.187 nA.
+00> [SWV-SP] Phase guard enabled: expected dummy Delta_I=-70.187 nA for 995000 ohm dummy.
+00> [AD5941] SWV-KDM fast filter configured: SINC2 output, Notch bypassed, OSR=22.
+00> [AD5941] SRAM allocated for sequencer test: FIFO=2KB, SEQ=4KB.
+00> [AD5941] External-HSTIA switch matrix configured for HSTIA external AIN2 330k: D/P/N=open, T=TRTIA|external RTIA pin|SE0LOAD, TSW=0x00000114.
+00> [AD5941] HSTIA external AIN2 330k configured: RTIA=330000 ohm, CTIA=4pF, LPDACCON0=0x00000021, LPTIACON0=0x00001001, HSTIACON=0x00000001, HSRTIACON=0x00000048, DE0RESCON=0x00000095, TSW=0x00000114, LPTIASW0=0x00000094.
+00> [BLANK-PEAK] Holding start potential before scan: dac=0xB46 E_WE-RE=-450.173 mV, quiet=3000 ms.
+00> BATCUR,t_ms=76278,IBAT_UA=2000
+00> BATCUR,t_ms=76750,IBAT_UA=5000
+00> BATCUR,t_ms=76855,IBAT_UA=2000
+00> BATCUR,t_ms=76961,IBAT_UA=2000
+00> BATCUR,t_ms=77066,IBAT_UA=2000
+00> BATCUR,t_ms=77171,IBAT_UA=2000
+00> BATCUR,t_ms=77276,IBAT_UA=5000
+00> BATCUR,t_ms=77382,IBAT_UA=5000
+00> BATCUR,t_ms=77487,IBAT_UA=2000
+00> BATCUR,t_ms=77592,IBAT_UA=2000
+00> BATCUR,t_ms=77697,IBAT_UA=5000
+00> BATCUR,t_ms=77803,IBAT_UA=2000
+00> BATCUR,t_ms=77908,IBAT_UA=2000
+00> BATCUR,t_ms=78013,IBAT_UA=5000
+00> BATCUR,t_ms=78119,IBAT_UA=5000
+00> BATCUR,t_ms=78224,IBAT_UA=32000
+00> BATCUR,t_ms=78329,IBAT_UA=7000
+00> BATCUR,t_ms=78434,IBAT_UA=2000
+00> BATCUR,t_ms=78540,IBAT_UA=4000
+00> BATCUR,t_ms=78848,IBAT_UA=5000
+00> BATCUR,t_ms=78953,IBAT_UA=33000
+00> BATCUR,t_ms=79058,IBAT_UA=33000
+00> BATCUR,t_ms=79163,IBAT_UA=2000
+00> [BLANK-PEAK] Sequencer loading: 85 steps total, max 85 steps/segment (single full segment), logical_points=170.
+00> [BLANK-PEAK] Triggering scan now; RTT CSV will print after all segments finalize.
+00> BATCUR,t_ms=79269,IBAT_UA=2000
+00> BATCUR,t_ms=79374,IBAT_UA=15000
+00> [BLANK-PEAK] Segment 1..85/85 loaded: len=357 words, scan=709 ms, final segment with safe-idle tail.
+00> [AD5941] SEQ finish work scheduled in 759 ms, ret=1.
+00> BATCUR,t_ms=79480,IBAT_UA=1000
+00> BATCUR,t_ms=79585,IBAT_UA=2000
+00> BATCUR,t_ms=79691,IBAT_UA=46000
+00> BATCUR,t_ms=79796,IBAT_UA=7000
+00> BATCUR,t_ms=79902,IBAT_UA=2000
+00> BATCUR,t_ms=80007,IBAT_UA=7000
+00> BATCUR,t_ms=80113,IBAT_UA=2000
+00> [AD5941] SEQ finish work entered: capture=HSTIAEXT330K, kdm_stage=0, current_total=5149.
+00> [AD5941] Sequencer capture finalized: drained_tail=0, total=5149/32000 samples.
+00> [BLANK-PEAK] All 85 segmented SWV steps captured; extracting complete curve.
+00> [BLANK-PEAK] Extracting single-frequency SWV peak from 5149 FIFO samples.
+00> [BLANK-PEAK] Peak search window: E_WE-RE=-400..-80 mV; edge transients outside this window are ignored.
+00> [BLANK-PEAK] Delta_I polarity: DropSens-style I_forward - I_reverse.
+00> [BLANK-PEAK] TIA raw-current polarity normalized for DropSens-style/electrochemical display.
+00> BATCUR,t_ms=80218,IBAT_UA=33000
+00> BATCUR,t_ms=80324,IBAT_UA=15000
+00> [SWV-SP] Auto endpoint phase shift=-5 samples, smoothness_score=114.899 nA, mean_delta=-69.456 nA, expected=-70.187 nA, guarded_score=363.439 nA.
+00> BATCUR,t_ms=80429,IBAT_UA=5000
+00> BATCUR,t_ms=80534,IBAT_UA=2000
+00> BATCUR,t_ms=80640,IBAT_UA=5000
+00> BATCUR,t_ms=80948,IBAT_UA=0
+00> BATCUR,t_ms=81054,IBAT_UA=2000
+00> BATCUR,t_ms=81159,IBAT_UA=2000
+00> BATCUR,t_ms=81264,IBAT_UA=7000
+00> BATCUR,t_ms=81369,IBAT_UA=16000
+00> BATCUR,t_ms=81475,IBAT_UA=2000
+00> BATCUR,t_ms=81580,IBAT_UA=2000
+00> BATCUR,t_ms=81686,IBAT_UA=2000
+00> BATCUR,t_ms=81791,IBAT_UA=2000
+00> BATCUR,t_ms=81897,IBAT_UA=23000
+00> BATCUR,t_ms=82003,IBAT_UA=3000
+00> BATCUR,t_ms=82108,IBAT_UA=16000
+00> BATCUR,t_ms=82214,IBAT_UA=31000
+00> BATCUR,t_ms=82319,IBAT_UA=2000
+00> BATCUR,t_ms=82424,IBAT_UA=2000
+00> BATCUR,t_ms=82530,IBAT_UA=15000
+00> BATCUR,t_ms=82636,IBAT_UA=15000
+00> BATCUR,t_ms=82741,IBAT_UA=2000
+00> BATCUR,t_ms=83049,IBAT_UA=2000
+00> BATCUR,t_ms=83155,IBAT_UA=2000
+00> BATCUR,t_ms=83260,IBAT_UA=15000
+00> BATCUR,t_ms=83365,IBAT_UA=2000
+00> [DUMMY-SWV] Ohmic response summary: n=81 mean_delta=69.442 nA sd_delta=1.037 nA expected_delta=70.187 nA, error=1.06%
+00> BATCUR,t_ms=83471,IBAT_UA=62000
+00> [AD5941] HSTIAEXT330K capture complete: 5149 samples stored in MCU RAM.
+00> [AD5941] HSTIAEXT330K avg=-223.472 nA, min=-483.408 nA, max=36.315 nA
+00> [REPEAT] Completed 5/5 runs.
+00> [AD5941] HS switch matrix opened.
+00> [AD5941] Safe idle/high-Z entered after SEQ: SW matrix open, LPTIA/HSTIA opened, LPDAC/LPPA/TIA/ADC off.
+00> EVT,HIGHZ,SW_MATRIX_OPEN=1,LPDAC_OFF=1,LPTIA_OPEN=1,HSTIA_OPEN=1,ADC_OFF=1
+00> [AD5941] Measurement session complete. Press 'y' in RTT for the next menu, or start a new BLE/Web run.
+00> BATCUR,t_ms=83576,IBAT_UA=2000
+00> BATCUR,t_ms=83682,IBAT_UA=2000
+00> BATCUR,t_ms=83787,IBAT_UA=2000
+00> BATCUR,t_ms=83892,IBAT_UA=2000
+00> BATCUR,t_ms=83997,IBAT_UA=5000
+00> BATCUR,t_ms=84103,IBAT_UA=5000
+00> BATCUR,t_ms=84208,IBAT_UA=0
+00> BATCUR,t_ms=84313,IBAT_UA=5000
+00> BATCUR,t_ms=84418,IBAT_UA=5000
+00> BATCUR,t_ms=84524,IBAT_UA=2000
+00> BATCUR,t_ms=84629,IBAT_UA=2000
+00> BATCUR,t_ms=84734,IBAT_UA=5000
+00> BATCUR,t_ms=84839,IBAT_UA=2000
+00> BATCUR,t_ms=85148,IBAT_UA=2000
+00> BATCUR,t_ms=85253,IBAT_UA=2000
+00> BATCUR,t_ms=85358,IBAT_UA=2000
+00> BATCUR,t_ms=85463,IBAT_UA=2000
+00> BATCUR,t_ms=85569,IBAT_UA=33000
+00> BATCUR,t_ms=85674,IBAT_UA=63000
+00> BATCUR,t_ms=85779,IBAT_UA=2000
+00> BATCUR,t_ms=85884,IBAT_UA=2000
+00> BATCUR,t_ms=85990,IBAT_UA=63000
+00> BATCUR,t_ms=86095,IBAT_UA=3000
+00> BATCUR,t_ms=86200,IBAT_UA=5000
+00> BATCUR,t_ms=86306,IBAT_UA=31000
+00> BATCUR,t_ms=86411,IBAT_UA=0
+00> BATCUR,t_ms=86516,IBAT_UA=2000
+00> BATCUR,t_ms=86621,IBAT_UA=16000
+00> BATCUR,t_ms=86727,IBAT_UA=5000
+00> BATCUR,t_ms=86832,IBAT_UA=2000
+00> BATCUR,t_ms=86937,IBAT_UA=5000
+00> BATCUR,t_ms=87474,IBAT_UA=63000
+00> BATCUR,t_ms=87579,IBAT_UA=32000
+00> BATCUR,t_ms=87684,IBAT_UA=5000
+00> BATCUR,t_ms=87790,IBAT_UA=2000
+00> BATCUR,t_ms=87895,IBAT_UA=16000
+00> BATCUR,t_ms=88000,IBAT_UA=15000
+00> BATCUR,t_ms=88105,IBAT_UA=11000
+00> BATCUR,t_ms=88211,IBAT_UA=2000
+00> BATCUR,t_ms=88316,IBAT_UA=5000
+00> BATCUR,t_ms=88421,IBAT_UA=23000
+00> BATCUR,t_ms=88526,IBAT_UA=15000
+00> BATCUR,t_ms=88632,IBAT_UA=2000
+00> BATCUR,t_ms=88737,IBAT_UA=2000
+00> BATCUR,t_ms=88842,IBAT_UA=2000
+00> BATCUR,t_ms=88947,IBAT_UA=33000
+00> BATCUR,t_ms=89053,IBAT_UA=15000
+00> BATCUR,t_ms=89158,IBAT_UA=32000
+00> BATCUR,t_ms=89263,IBAT_UA=2000
+00> BATCUR,t_ms=89571,IBAT_UA=2000
+00> BATCUR,t_ms=89677,IBAT_UA=5000
+00> BATCUR,t_ms=89782,IBAT_UA=2000
+00> BATCUR,t_ms=89887,IBAT_UA=33000
+00> BATCUR,t_ms=89992,IBAT_UA=2000
+00> BATCUR,t_ms=90098,IBAT_UA=5000
+00> BATCUR,t_ms=90203,IBAT_UA=63000
+00> BATCUR,t_ms=90308,IBAT_UA=15000
+00> BATCUR,t_ms=90413,IBAT_UA=64000
+00> BATCUR,t_ms=90519,IBAT_UA=2000
+00> BATCUR,t_ms=90624,IBAT_UA=2000
+00> [BLE] NUS TX notify disabled.
+00> [BLE] Central disconnected, reason=0x13.
+00> [BLE] Advertising as "NanoStat" with Nordic UART Service.
+00> BATCUR,t_ms=90729,IBAT_UA=2000
+00> BATCUR,t_ms=90834,IBAT_UA=16000
+00> BATCUR,t_ms=90940,IBAT_UA=23000
+00> BATCUR,t_ms=91045,IBAT_UA=1000
+00> BATCUR,t_ms=91150,IBAT_UA=5000
+00> BATCUR,t_ms=91255,IBAT_UA=2000
+00> BATCUR,t_ms=91361,IBAT_UA=17000
+00> BATCUR,t_ms=91658,IBAT_UA=32000
+00> BATCUR,t_ms=91764,IBAT_UA=5000
+00> BATCUR,t_ms=91869,IBAT_UA=33000
+00> BATCUR,t_ms=91974,IBAT_UA=33000
+00> BATCUR,t_ms=92080,IBAT_UA=2000
+00> BATCUR,t_ms=92185,IBAT_UA=62000
+00> BATCUR,t_ms=92290,IBAT_UA=5000
+00> BATCUR,t_ms=92396,IBAT_UA=16000
+00> BATCUR,t_ms=92501,IBAT_UA=31000
+00> BATCUR,t_ms=92606,IBAT_UA=33000
+00> BATCUR,t_ms=92712,IBAT_UA=2000
+00> BATCUR,t_ms=92817,IBAT_UA=62000
+00> BATCUR,t_ms=92922,IBAT_UA=11000
+00> BATCUR,t_ms=93027,IBAT_UA=3000
+00> BATCUR,t_ms=93133,IBAT_UA=2000
+00> BATCUR,t_ms=93238,IBAT_UA=2000
+00> BATCUR,t_ms=93343,IBAT_UA=35000
+00> BATCUR,t_ms=93448,IBAT_UA=31000
+00> BATCUR,t_ms=93746,IBAT_UA=11000
+00> BATCUR,t_ms=93851,IBAT_UA=5000
+00> BATCUR,t_ms=93956,IBAT_UA=7000
+00> BATCUR,t_ms=94062,IBAT_UA=32000
+00> BATCUR,t_ms=94167,IBAT_UA=2000
+00> BATCUR,t_ms=94272,IBAT_UA=2000
+00> BATCUR,t_ms=94377,IBAT_UA=62000
+00> BATCUR,t_ms=94483,IBAT_UA=15000
+00> BATCUR,t_ms=94588,IBAT_UA=7000
+00> BATCUR,t_ms=94693,IBAT_UA=2000
+00> BATCUR,t_ms=94798,IBAT_UA=2000
+00> BATCUR,t_ms=94904,IBAT_UA=1000
+00> BATCUR,t_ms=95009,IBAT_UA=16000
+00> BATCUR,t_ms=95114,IBAT_UA=31000
+00> BATCUR,t_ms=95219,IBAT_UA=32000
+00> BATCUR,t_ms=95325,IBAT_UA=2000
+00> BATCUR,t_ms=95430,IBAT_UA=1000
+00> BATCUR,t_ms=95535,IBAT_UA=8000
+00> BATCUR,t_ms=95833,IBAT_UA=5000
+00> BATCUR,t_ms=95938,IBAT_UA=5000
+00> BATCUR,t_ms=96043,IBAT_UA=7000
+00> BATCUR,t_ms=96148,IBAT_UA=16000
+00> BATCUR,t_ms=96254,IBAT_UA=5000
+00> BATCUR,t_ms=96359,IBAT_UA=62000
+00> BATCUR,t_ms=96464,IBAT_UA=63000
+00> BATCUR,t_ms=96570,IBAT_UA=15000
+00> BATCUR,t_ms=96675,IBAT_UA=5000
+00> BATCUR,t_ms=96780,IBAT_UA=0
+00> BATCUR,t_ms=96885,IBAT_UA=5000
+00> BATCUR,t_ms=96990,IBAT_UA=5000
+00> BATCUR,t_ms=97096,IBAT_UA=15000
+00> BATCUR,t_ms=97201,IBAT_UA=33000
+00> BATCUR,t_ms=97306,IBAT_UA=2000
+00> BATCUR,t_ms=97411,IBAT_UA=62000
+00> BATCUR,t_ms=97517,IBAT_UA=2000
+00> BATCUR,t_ms=97622,IBAT_UA=5000
+  < P
+00> [BATCUR] Current trace STOPPED. Format: BATCUR,t_ms=...,IBAT_UA=...

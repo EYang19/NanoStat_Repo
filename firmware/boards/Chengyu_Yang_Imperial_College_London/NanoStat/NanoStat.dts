@@ -1,0 +1,315 @@
+/*
+ * NanoStat (nRF52840-QIAA based) Device Tree
+ * Designed for Portable Electrochemical Analysis
+ */
+
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
+#include <zephyr/dt-bindings/regulator/npm1300.h>
+
+#include "NanoStat-pinctrl.dtsi"
+
+/ {
+    model = "NanoStat Portable Electrochemical Analyzer";
+    compatible = "Chengyu_Yang_Imperial_College_London,NanoStat";
+
+    /* Core memory, display, and console bindings. */
+    chosen {
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zephyr,code-partition = &slot0_partition;
+        zephyr,display = &ssd1306;
+        /* Route console, printk, and shell traffic through native USB CDC ACM. */
+        zephyr,console = &cdc_acm_uart0;
+        zephyr,shell-uart = &cdc_acm_uart0;
+    };
+
+    /* Standard aliases used by Zephyr drivers and application code. */
+    aliases {
+        uart-0 = &uart0;
+        i2c-0 = &i2c0;
+        spi-1 = &spi1;
+        qspi-0 = &qspi;
+        sw0 = &button_boot;
+        sw3 = &button_ship_hold;
+        afe-int = &ad5941_gp0_int;
+    };
+
+    /* GPIO button definitions. */
+    buttons {
+        compatible = "gpio-keys";
+
+        button_boot: button_boot {
+            gpios = <&gpio1 15 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+            label = "BOOT Button";
+        };
+
+        button_ship_hold: button_ship_hold {
+            /* P1.05 maps to GPIO port 1, pin 5. */
+            gpios = <&gpio1 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+            label = "Ship Hold / Sleep Button";
+        };
+    };
+
+};
+
+/* ================================================================= */
+/* 0. Internal flash partition table                                  */
+/* ================================================================= */
+&flash0 {
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        boot_partition: partition@0 {
+            label = "mcuboot";
+            reg = <0x00000000 DT_SIZE_K(48)>;
+        };
+
+        slot0_partition: partition@c000 {
+            label = "image-0";
+            reg = <0x0000c000 DT_SIZE_K(472)>;
+        };
+
+        slot1_partition: partition@82000 {
+            label = "image-1";
+            reg = <0x00082000 DT_SIZE_K(472)>;
+        };
+
+        storage_partition: partition@f8000 {
+            label = "storage";
+            reg = <0x000f8000 DT_SIZE_K(32)>;
+        };
+    };
+};
+
+/* ================================================================= */
+/* 1. Physical pin mappings                                            */
+/* ================================================================= */
+&pinctrl {
+    /* UART pins. */
+    uart0_default: uart0_default {
+        group1 { psels = <NRF_PSEL(UART_TX, 0, 16)>, <NRF_PSEL(UART_RX, 0, 14)>; };
+    };
+    uart0_sleep: uart0_sleep {
+        group1 { psels = <NRF_PSEL(UART_TX, 0, 16)>, <NRF_PSEL(UART_RX, 0, 14)>; low-power-enable; };
+    };
+
+    /* I2C0 pins for the nPM1300 and OLED. */
+    i2c0_default: i2c0_default {
+        group1 { psels = <NRF_PSEL(TWIM_SDA, 0, 0)>, <NRF_PSEL(TWIM_SCL, 0, 27)>; bias-pull-up; };
+    };
+    i2c0_sleep: i2c0_sleep {
+        group1 { psels = <NRF_PSEL(TWIM_SDA, 0, 0)>, <NRF_PSEL(TWIM_SCL, 0, 27)>; low-power-enable; };
+    };
+
+    /* SPI1 pins for the AD5941. */
+    spi1_default: spi1_default {
+        group1 { psels = <NRF_PSEL(SPIM_SCK, 0, 6)>, <NRF_PSEL(SPIM_MOSI, 0, 26)>, <NRF_PSEL(SPIM_MISO, 0, 1)>; };
+    };
+    spi1_sleep: spi1_sleep {
+        group1 { psels = <NRF_PSEL(SPIM_SCK, 0, 6)>, <NRF_PSEL(SPIM_MOSI, 0, 26)>, <NRF_PSEL(SPIM_MISO, 0, 1)>; low-power-enable; };
+    };
+
+    /* QSPI pins for external flash. */
+    qspi_default: qspi_default {
+        group1 { psels = <NRF_PSEL(QSPI_CSN, 0, 17)>, <NRF_PSEL(QSPI_SCK, 0, 19)>, <NRF_PSEL(QSPI_IO0, 0, 21)>, <NRF_PSEL(QSPI_IO1, 0, 23)>, <NRF_PSEL(QSPI_IO2, 0, 22)>, <NRF_PSEL(QSPI_IO3, 1, 0)>; };
+    };
+    qspi_sleep: qspi_sleep {
+        group1 { psels = <NRF_PSEL(QSPI_CSN, 0, 17)>, <NRF_PSEL(QSPI_SCK, 0, 19)>, <NRF_PSEL(QSPI_IO0, 0, 21)>, <NRF_PSEL(QSPI_IO1, 0, 23)>, <NRF_PSEL(QSPI_IO2, 0, 22)>, <NRF_PSEL(QSPI_IO3, 1, 0)>; low-power-enable; };
+    };
+};
+
+/* ================================================================= */
+/* 2. Peripheral nodes                                                 */
+/* ================================================================= */
+
+/* Native USB. */
+zephyr_udc0: &usbd {
+    compatible = "nordic,nrf-usbd";
+    status = "okay";
+
+    cdc_acm_uart0: cdc_acm_uart0 {
+        compatible = "zephyr,cdc-acm-uart";
+
+    };
+};
+
+/* Debug UART. */
+&uart0 {
+    status = "okay";
+    current-speed = <115200>;
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-1 = <&uart0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+/* I2C bus for the nPM1300 and OLED. */
+&i2c0 {
+    status = "okay";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
+    clock-frequency = <I2C_BITRATE_STANDARD>;
+
+    npm1300: npm1300@6b {
+        compatible = "nordic,npm1300";
+        reg = <0x6b>;
+        status = "okay";
+
+        host-int-gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
+        pmic-int-pin = <3>;
+        ship-to-active-time-ms = <3008>;
+        long-press-reset = "disabled";
+
+        npm1300_gpio: gpio-controller {
+            compatible = "nordic,npm1300-gpio";
+            gpio-controller;
+            #gpio-cells = <2>;
+            ngpios = <5>;
+        };
+
+        npm1300_regulators: regulators {
+            compatible = "nordic,npm1300-regulator";
+            status = "okay";
+
+            npm1300_buck1: BUCK1 {
+                regulator-min-microvolt = <3300000>;
+                regulator-max-microvolt = <3300000>;
+                regulator-always-on;
+                regulator-boot-on;
+                regulator-initial-mode = <NPM1300_BUCK_MODE_AUTO>;
+
+            };
+
+            npm1300_buck2: BUCK2 {
+                regulator-min-microvolt = <3300000>;
+                regulator-max-microvolt = <3300000>;
+                regulator-always-on;
+                regulator-boot-on;
+                regulator-initial-mode = <NPM1300_BUCK_MODE_PWM>;
+            };
+
+            npm1300_ldo1: LDO1 {
+                regulator-initial-mode = <NPM1300_LDSW_MODE_LDSW>;
+            };
+
+            npm1300_ldo2: LDO2 {
+                regulator-min-microvolt = <3200000>;
+                regulator-max-microvolt = <3200000>;
+                regulator-initial-mode = <NPM1300_LDSW_MODE_LDO>;
+            };
+        };
+
+        npm1300_leds: leds {
+            compatible = "nordic,npm1300-led";
+            status = "okay";
+            nordic,led0-mode = "host";
+            nordic,led1-mode = "host";
+            nordic,led2-mode = "host";
+        };
+
+        npm1300_charger: charger {
+            compatible = "nordic,npm1300-charger";
+            status = "okay";
+
+            term-microvolt = <4150000>;
+            current-microamp = <32000>;
+            dischg-limit-microamp = <1000000>;
+            vbus-limit-microamp = <500000>;
+
+            thermistor-ohms = <10000>;
+            thermistor-beta = <3988>;
+
+            charging-enable;
+        };
+    };
+
+    ssd1306: ssd1306@3c {
+        compatible = "solomon,ssd1306fb";
+        reg = <0x3c>;
+        status = "okay";
+        width = <128>;
+        height = <64>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <63>;
+        segment-remap;
+        com-invdir;
+        com-sequential;
+        prechargep = <0x22>;
+    };
+};
+
+/* SPI bus for the AD5941. */
+&spi1 {
+    status = "okay";
+    pinctrl-0 = <&spi1_default>;
+    pinctrl-1 = <&spi1_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    /* Chip select is controlled manually through ad5941_config below. */
+
+    /* The label matches DT_NODELABEL(ad5941_spi) in the application. */
+    ad5941_spi: ad5941@0 {
+        compatible = "vnd,spi-device";
+        reg = <0>;
+        /* Bring-up uses 1 MHz; verify signal integrity before increasing it. */
+        spi-max-frequency = <1000000>;
+    };
+};
+/* ================================================================= */
+/{
+    /* Manually controlled AD5941 GPIO signals. */
+    ad5941_config {
+        compatible = "gpio-keys";
+
+        ad5941_cs: ad5941_cs {
+            /* Manual chip-select pin P0.08. */
+            gpios = <&gpio0 8  GPIO_ACTIVE_LOW>;
+            label = "AD5941 CS PIN";
+        };
+
+        ad5941_reset: ad5941_reset {
+            /* Reset pin P1.11. */
+            gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
+            label = "AD5941 RESET PIN";
+        };
+
+        ad5941_gp0_int: ad5941_gp0_int {
+            gpios = <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+            label = "AD5941 GP0 INT PIN";
+        };
+    };
+};
+/* QSPI bus for the external MX25R6435F flash. */
+&qspi {
+    status = "okay";
+    pinctrl-0 = <&qspi_default>;
+    pinctrl-1 = <&qspi_sleep>;
+    pinctrl-names = "default", "sleep";
+    mx25r64: mx25r6435f@0 {
+        compatible = "nordic,qspi-nor";
+        reg = <0>;
+        writeoc = "pp4io";
+        readoc = "read4io";
+        sck-frequency = <8000000>;
+        jedec-id = [c2 28 17];
+        size = <67108864>;
+        has-dpd;
+    };
+};
+
+/* ================================================================= */
+/* 3. Enable GPIO ports                                                */
+/* ================================================================= */
+&gpiote {
+    status = "okay";
+};
+
+&gpio0 { status = "okay"; };
+&gpio1 { status = "okay"; };

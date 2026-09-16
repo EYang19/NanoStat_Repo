@@ -1,0 +1,2721 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NanoStat BLE Console</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --text: #17202a;
+      --muted: #637083;
+      --line: #d7dde7;
+      --blue: #1f6feb;
+      --green: #218739;
+      --red: #c93232;
+      --amber: #a66b00;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 650;
+    }
+
+    .header-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .page-tabs {
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .page-tabs button {
+      height: 30px;
+      font-size: 13px;
+    }
+
+    .page-tabs button.active {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: rgba(31, 111, 235, 0.08);
+    }
+
+    main {
+      width: min(1180px, calc(100vw - 28px));
+      margin: 18px auto 28px;
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    main.battery-page {
+      display: block;
+    }
+
+    main.highz-page {
+      display: block;
+      max-width: 1100px;
+      margin: 24px auto;
+    }
+
+    .highz-panel {
+      background: #fff;
+      border: 1px solid #d0d7de;
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input,
+    select {
+      width: 96px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 9px;
+      font: inherit;
+      background: #fff;
+    }
+
+    select {
+      width: 150px;
+    }
+
+    button {
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      padding: 0 11px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      display: inline-block;
+    }
+
+    .dot.connected {
+      background: var(--green);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      min-height: 68px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    .metric strong {
+      font-size: 16px;
+      font-weight: 650;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .chart-wrap {
+      height: 460px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .log {
+      height: 240px;
+      overflow: auto;
+      background: #0f1720;
+      color: #d9e7f7;
+      border-radius: 7px;
+      padding: 10px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .chart-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .chart-hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-left: auto;
+    }
+
+    .danger {
+      color: var(--red);
+    }
+
+    .run-list {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 8px;
+      max-height: 170px;
+      overflow: auto;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .run-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid #eef2f7;
+      padding: 6px 0;
+    }
+
+    .run-item:last-child {
+      border-bottom: 0;
+    }
+
+    .run-item button {
+      height: 26px;
+      padding: 0 8px;
+      font-size: 12px;
+    }
+
+    .workflow {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      background: #fbfcfe;
+    }
+
+    .workflow h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .workflow-output {
+      border: 1px solid #e6ebf2;
+      border-radius: 6px;
+      background: #fff;
+      padding: 8px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      white-space: pre-wrap;
+    }
+
+    .battery-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .battery-panel h2,
+    .battery-panel h3 {
+      margin: 0;
+    }
+
+    .battery-panel h2 {
+      font-size: 18px;
+    }
+
+    .battery-panel h3 {
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .battery-panel .metric-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .battery-log {
+      height: 220px;
+    }
+
+    .hidden,
+    main.hidden {
+      display: none;
+    }
+
+    @media (max-width: 860px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .battery-panel .metric-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NanoStat BLE Console</h1>
+    <div class="header-right">
+      <div class="page-tabs" aria-label="Page navigation">
+        <button id="measurementPageBtn" class="active">Measurement</button>
+        <button id="highzPageBtn">High-Z test</button>
+        <button id="batteryPageBtn">Battery</button>
+      </div>
+      <div class="status"><span id="connDot" class="dot"></span><span id="connText">Disconnected</span></div>
+    </div>
+  </header>
+
+  <main id="measurementPage">
+    <section class="controls">
+      <div class="row">
+        <button id="connectBtn" class="primary">Connect</button>
+        <button id="disconnectBtn" disabled>Disconnect</button>
+      </div>
+
+      <div class="row">
+        <button id="pingBtn" disabled>Ping</button>
+        <button id="statusBtn" disabled>Status</button>
+        <button id="readBtn" disabled>Read Latest</button>
+      </div>
+
+      <div class="row">
+        <label for="modeSelect">Measurement mode</label>
+        <select id="modeSelect">
+          <option value="blank">Aptasensor PBS / Blank</option>
+          <option value="dummy">Dummy-cell validation</option>
+        </select>
+      </div>
+
+      <div class="row" id="dummyControls">
+        <label for="dummyProfileSelect">SWV profile</label>
+        <select id="dummyProfileSelect">
+          <option value="5MV">5.37 mV full</option>
+          <option value="2MV">2.15 mV full</option>
+          <option value="1MVSEG">1.07 mV segmented</option>
+        </select>
+        <label for="dummyResistorInput">Rdummy</label>
+        <input id="dummyResistorInput" type="number" min="1000" max="100000000" value="995000" />
+      </div>
+
+      <div class="row" id="dummyControls2">
+        <label for="dummyRepeatInput">Repeat</label>
+        <input id="dummyRepeatInput" type="number" min="1" max="50" value="1" />
+        <label for="powerSourceInput">Power</label>
+        <select id="powerSourceInput">
+          <option value="battery">Li-Po battery</option>
+          <option value="mac_usb_c">MacBook USB-C</option>
+          <option value="usb_lab">USB/lab supply</option>
+        </select>
+      </div>
+
+      <div class="workflow hidden" id="dummySessionPanel">
+        <h2>Randomized dummy session</h2>
+        <div class="muted">Interleaves 5 mV, 2 mV and 1 mV segmented runs. Restart and reconnect NanoStat between sessions.</div>
+        <div class="row">
+          <label for="dummySessionRepeatInput">Repeats/profile</label>
+          <input id="dummySessionRepeatInput" type="number" min="1" max="20" value="5" />
+        </div>
+        <div class="row">
+          <button id="startDummySessionBtn" class="primary">Start Random Session</button>
+          <button id="exportDummySessionBtn" disabled>Export Session CSV</button>
+        </div>
+        <div id="dummySessionStatus" class="workflow-output">No randomized session started.</div>
+      </div>
+
+      <div class="row">
+        <label for="freqInput">SWV frequency</label>
+        <input id="freqInput" type="number" min="1" max="250" value="120" />
+        <label for="tiaSelect">TIA</label>
+        <select id="tiaSelect">
+          <option value="HSTIA160K">HSTIA internal 160k</option>
+          <option value="HSTIAEXT160K">HSTIA external AIN3 160k</option>
+          <option value="HSTIAEXT330K">HSTIA external AIN2 330k</option>
+          <option value="HSTIAEXT680K">HSTIA external AIN1 680k</option>
+          <option value="LPTIA">LPTIA 160k||2M</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="concentrationInput">Concentration</label>
+        <input id="concentrationInput" type="text" placeholder="blank" />
+        <select id="concentrationUnit">
+          <option value="blank">blank</option>
+          <option value="pM">pM</option>
+          <option value="nM">nM</option>
+          <option value="ng/mL">ng/mL</option>
+          <option value="uM">uM</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="peakMethodSelect">Peak method</label>
+        <select id="peakMethodSelect">
+          <option value="sg5">SG5</option>
+          <option value="delta3">avg3</option>
+          <option value="smooth5">smooth5</option>
+          <option value="smooth7">smooth7</option>
+          <option value="delta">raw</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <button id="startBtn" class="primary" disabled>Start Blank</button>
+        <button id="highZBtn" disabled>High-Z Now</button>
+        <button id="nextRunBtn" disabled>Next Run</button>
+      </div>
+
+      <div class="workflow">
+        <h2>LOD workflow</h2>
+        <div class="row">
+          <button id="lodBlankBtn" disabled>Run Blank Replicate</button>
+          <button id="lodConfirmBlankBtn" disabled>Confirm Blank Set</button>
+        </div>
+        <div class="row">
+          <button id="lodCalBtn" disabled>Run Cortisol Point</button>
+          <button id="lodConfirmCalBtn" disabled>Confirm Calibration Set</button>
+        </div>
+        <div class="row">
+          <button id="lodExportBtn" disabled>Export LOD CSV</button>
+        </div>
+        <div id="lodSummary" class="workflow-output">Blank: 0/5 confirmed? no
+Calibration: 0 points confirmed? no
+LOD: --</div>
+      </div>
+
+      <div class="row">
+        <button id="exportBtn" disabled>Export CSV</button>
+        <button id="exportAllBtn" disabled>Export All Runs</button>
+        <button id="clearBtn">Clear</button>
+      </div>
+
+      <div>
+        <label>Saved runs</label>
+        <div id="runList" class="run-list muted">No saved runs yet.</div>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric"><span>Points</span><strong id="pointsMetric">0</strong></div>
+        <div class="metric"><span id="peakMetricLabel">Peak SG5</span><strong id="peakMetric">--</strong></div>
+        <div class="metric"><span>Peak voltage</span><strong id="peakVoltageMetric">--</strong></div>
+        <div class="metric"><span>Device state</span><strong id="stateMetric">Idle</strong></div>
+        <div class="metric"><span>Runs at frequency</span><strong id="runsMetric">0</strong></div>
+        <div class="metric"><span>I_peak mean / SD</span><strong id="ipeakStatsMetric">--</strong></div>
+        <div class="metric"><span>V_peak mean / SD</span><strong id="vpeakStatsMetric">--</strong></div>
+        <div class="metric"><span>Sigma mean / SD</span><strong id="sigmaStatsMetric">--</strong></div>
+        <div class="metric"><span>SNR mean</span><strong id="snrStatsMetric">--</strong></div>
+      </div>
+
+      <p class="muted">
+        Uses Nordic UART Service. Browser writes to NUS RX and subscribes to NUS TX.
+        Run from <code>localhost</code> or HTTPS in Chrome/Edge.
+      </p>
+    </section>
+
+    <section>
+      <div class="chart-toolbar">
+        <button id="zoomInBtn">Zoom In</button>
+        <button id="zoomOutBtn">Zoom Out</button>
+        <button id="resetZoomBtn">Reset View</button>
+        <button id="clearHighlightBtn">Clear Highlight</button>
+        <span class="chart-hint">Wheel = zoom XY, Shift+drag = pan, Ctrl+drag = box zoom, double-click = reset, Shift+legend = highlight</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="swvChart"></canvas>
+      </div>
+      <h3>BLE Log</h3>
+      <div id="log" class="log"></div>
+    </section>
+  </main>
+
+  <main id="batteryPage" class="battery-page hidden">
+    <section class="battery-panel">
+      <div class="row">
+        <h2>Battery and Charger Status</h2>
+        <button id="batteryRefreshBtn" class="primary" disabled>Refresh Battery</button>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric"><span>Battery voltage</span><strong id="batteryVbatMetric">--</strong></div>
+        <div class="metric"><span>Rough SOC</span><strong id="batterySocMetric">--</strong></div>
+        <div class="metric"><span>Battery current</span><strong id="batteryIbatMetric">--</strong></div>
+        <div class="metric"><span>VBUS</span><strong id="batteryVbusMetric">--</strong></div>
+        <div class="metric"><span>Charge current cfg</span><strong id="batteryChargeMetric">--</strong></div>
+        <div class="metric"><span>Discharge limit cfg</span><strong id="batteryDischargeMetric">--</strong></div>
+        <div class="metric"><span>NTC / die temp</span><strong id="batteryTempMetric">--</strong></div>
+        <div class="metric"><span>Charger flags</span><strong id="batteryFlagsMetric">--</strong></div>
+      </div>
+
+      <div id="batterySummary" class="workflow-output">Connect to NanoStat, then press Refresh Battery.</div>
+      <h3>Battery Log</h3>
+      <div id="batteryLog" class="log battery-log"></div>
+    </section>
+  </main>
+
+  <main id="highzPage" class="highz-page hidden">
+    <section class="highz-panel">
+      <div class="row">
+        <h2>High-Z validation</h2>
+        <span class="muted">Manual release test</span>
+      </div>
+      <p>
+        The device steps the electrode potential from approximately -400 mV to -200 mV,
+        then holds -200 mV. The electrode path is not opened automatically.
+      </p>
+      <div class="row">
+        <button id="highzTestStartBtn" class="primary" disabled>Start High-Z Test</button>
+        <button id="highzTestReleaseBtn" disabled>Apply High-Z</button>
+        <button id="highzTestResetBtn" disabled>Reset High-Z Test</button>
+      </div>
+      <div id="highzTestStatus" class="workflow-output">Connect to NanoStat to begin.</div>
+      <h3>High-Z test log</h3>
+      <div id="highzTestLog" class="log"></div>
+    </section>
+  </main>
+
+  <script>
+    const NUS_SERVICE = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+    const NUS_RX = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+    const NUS_TX = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+
+    const zoomPlugin = window.ChartZoom || window.zoomPlugin;
+    if (zoomPlugin) {
+      Chart.register(zoomPlugin);
+    }
+
+    let device = null;
+    let server = null;
+    let rxChar = null;
+    let txChar = null;
+    let rxBuffer = '';
+    let swvRows = [];
+    let swvRunMetrics = [];
+    let savedRuns = [];
+    let highlightedDatasetIndex = null;
+    let currentScanFrequencyHz = null;
+    let currentScanTiaMode = 'HSTIA160K';
+    let currentScanConcentration = '';
+    let currentScanConcentrationUnit = 'blank';
+    let currentScanWorkflow = 'manual';
+    let currentScanMode = 'blank';
+    let currentDummyProfile = '5MV';
+    let currentDummyResistorOhm = 995000;
+    let highzTestHolding = false;
+    let highzTestRequestPending = false;
+    let highzTestTimer = null;
+    let currentDummyPowerSource = 'battery';
+    let currentDummyFirmwareMetadata = {};
+    let currentDoneMetadata = {};
+    let batteryStatus = {};
+    let batteryRequestPending = false;
+    let batteryRequestTimer = null;
+    const DUMMY_SWV_PULSE_MV_FALLBACK = 34.918;
+    let currentScanMetricRecorded = false;
+    let currentScanSaved = false;
+    let currentRunId = 0;
+    let dummySession = null;
+    let scanState = 'idle';
+    let lodBlankConfirmed = false;
+    let lodCalibrationConfirmed = false;
+    const PEAK_SEARCH_MIN_MV = -400;
+    const PEAK_SEARCH_MAX_MV = -80;
+    const PEAK_METHODS = {
+      sg5: { key: 'sg5', label: 'SG5', exportName: 'Delta_I_sg5_nA' },
+      delta3: { key: 'delta3', label: 'avg3', exportName: 'Delta_I_avg3_nA' },
+      smooth5: { key: 'smooth5', label: 'smooth5', exportName: 'Delta_I_smooth5_nA' },
+      smooth7: { key: 'smooth7', label: 'smooth7', exportName: 'Delta_I_smooth7_nA' },
+      delta: { key: 'delta', label: 'raw', exportName: 'Delta_I_nA' },
+    };
+
+    const baseDatasetStyles = [
+      { borderColor: '#1f6feb', backgroundColor: 'rgba(31, 111, 235, 0.12)', pointRadius: 2, borderWidth: 2 },
+      { borderColor: '#9aa7b7', backgroundColor: 'rgba(154, 167, 183, 0.08)', pointRadius: 1.5, borderWidth: 1 },
+      { borderColor: '#f97316', backgroundColor: 'rgba(249, 115, 22, 0.08)', pointRadius: 1.8, borderWidth: 1.8 },
+      { borderColor: '#16a34a', backgroundColor: 'rgba(22, 163, 74, 0.08)', pointRadius: 1.6, borderWidth: 1.8 },
+      { borderColor: '#9333ea', backgroundColor: 'rgba(147, 51, 234, 0.08)', pointRadius: 1.6, borderWidth: 1.8 },
+    ];
+
+    const peakSearchWindowPlugin = {
+      id: 'peakSearchWindow',
+      beforeDatasetsDraw(targetChart) {
+        const { ctx, chartArea, scales } = targetChart;
+        if (currentScanMode === 'dummy') return;
+        if (!chartArea || !scales.x) return;
+
+        const xMin = scales.x.getPixelForValue(PEAK_SEARCH_MIN_MV);
+        const xMax = scales.x.getPixelForValue(PEAK_SEARCH_MAX_MV);
+        if (!Number.isFinite(xMin) || !Number.isFinite(xMax)) return;
+
+        const left = Math.max(chartArea.left, Math.min(xMin, xMax));
+        const right = Math.min(chartArea.right, Math.max(xMin, xMax));
+        if (right <= chartArea.left || left >= chartArea.right || right <= left) return;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(33, 135, 57, 0.08)';
+        ctx.fillRect(left, chartArea.top, right - left, chartArea.bottom - chartArea.top);
+        ctx.strokeStyle = 'rgba(33, 135, 57, 0.22)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(left, chartArea.top);
+        ctx.lineTo(left, chartArea.bottom);
+        ctx.moveTo(right, chartArea.top);
+        ctx.lineTo(right, chartArea.bottom);
+        ctx.stroke();
+        ctx.restore();
+      },
+    };
+
+    const peakLabelPlugin = {
+      id: 'peakLabel',
+      afterDatasetsDraw(targetChart) {
+        if (currentScanMode === 'dummy') return;
+        if (!swvRows.length) return;
+        const metrics = computeScanMetrics();
+        if (!metrics ||
+            !Number.isFinite(metrics.iPeak) ||
+            !Number.isFinite(metrics.vPeak)) {
+          return;
+        }
+
+        const { ctx, chartArea, scales } = targetChart;
+        const x = scales.x.getPixelForValue(metrics.vPeak);
+        const y = scales.y.getPixelForValue(metrics.iPeak);
+        if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+
+        const clampedX = Math.max(chartArea.left + 6, Math.min(chartArea.right - 6, x));
+        const clampedY = Math.max(chartArea.top + 6, Math.min(chartArea.bottom - 6, y));
+        const preferRight = clampedX < chartArea.left + chartArea.width * 0.62;
+        const labelX = preferRight
+          ? Math.min(clampedX + 18, chartArea.right - 126)
+          : Math.max(clampedX - 146, chartArea.left + 6);
+        const labelY = Math.max(chartArea.top + 8, Math.min(clampedY - 38, chartArea.bottom - 50));
+        const labelText1 = `I_peak ${metrics.iPeak.toFixed(3)} nA`;
+        const labelText2 = `E ${metrics.vPeak.toFixed(3)} mV`;
+
+        ctx.save();
+        ctx.font = '12px Inter, system-ui, sans-serif';
+        const labelWidth = Math.max(ctx.measureText(labelText1).width, ctx.measureText(labelText2).width) + 18;
+        const labelHeight = 42;
+
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#0f1720';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+
+        ctx.beginPath();
+        ctx.roundRect(labelX, labelY, labelWidth, labelHeight, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#0f1720';
+        ctx.fillText(labelText1, labelX + 9, labelY + 17);
+        ctx.fillText(labelText2, labelX + 9, labelY + 34);
+
+        ctx.strokeStyle = '#0f1720';
+        ctx.beginPath();
+        ctx.moveTo(labelX + (preferRight ? 4 : labelWidth - 4), labelY + labelHeight - 7);
+        ctx.lineTo(clampedX, clampedY);
+        ctx.stroke();
+
+        ctx.fillStyle = '#1f6feb';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(clampedX, clampedY, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      },
+    };
+
+    const el = {
+      measurementPage: document.getElementById('measurementPage'),
+      batteryPage: document.getElementById('batteryPage'),
+      highzPage: document.getElementById('highzPage'),
+      measurementPageBtn: document.getElementById('measurementPageBtn'),
+      batteryPageBtn: document.getElementById('batteryPageBtn'),
+      highzPageBtn: document.getElementById('highzPageBtn'),
+      connectBtn: document.getElementById('connectBtn'),
+      disconnectBtn: document.getElementById('disconnectBtn'),
+      pingBtn: document.getElementById('pingBtn'),
+      statusBtn: document.getElementById('statusBtn'),
+      readBtn: document.getElementById('readBtn'),
+      batteryRefreshBtn: document.getElementById('batteryRefreshBtn'),
+      startBtn: document.getElementById('startBtn'),
+      highZBtn: document.getElementById('highZBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      resetZoomBtn: document.getElementById('resetZoomBtn'),
+      zoomInBtn: document.getElementById('zoomInBtn'),
+      zoomOutBtn: document.getElementById('zoomOutBtn'),
+      clearHighlightBtn: document.getElementById('clearHighlightBtn'),
+      freqInput: document.getElementById('freqInput'),
+      modeSelect: document.getElementById('modeSelect'),
+      dummyControls: document.getElementById('dummyControls'),
+      dummyControls2: document.getElementById('dummyControls2'),
+      dummyProfileSelect: document.getElementById('dummyProfileSelect'),
+      dummyResistorInput: document.getElementById('dummyResistorInput'),
+      dummyRepeatInput: document.getElementById('dummyRepeatInput'),
+      powerSourceInput: document.getElementById('powerSourceInput'),
+      dummySessionPanel: document.getElementById('dummySessionPanel'),
+      dummySessionRepeatInput: document.getElementById('dummySessionRepeatInput'),
+      startDummySessionBtn: document.getElementById('startDummySessionBtn'),
+      exportDummySessionBtn: document.getElementById('exportDummySessionBtn'),
+      dummySessionStatus: document.getElementById('dummySessionStatus'),
+      tiaSelect: document.getElementById('tiaSelect'),
+      peakMethodSelect: document.getElementById('peakMethodSelect'),
+      concentrationInput: document.getElementById('concentrationInput'),
+      concentrationUnit: document.getElementById('concentrationUnit'),
+      nextRunBtn: document.getElementById('nextRunBtn'),
+      lodBlankBtn: document.getElementById('lodBlankBtn'),
+      lodConfirmBlankBtn: document.getElementById('lodConfirmBlankBtn'),
+      lodCalBtn: document.getElementById('lodCalBtn'),
+      lodConfirmCalBtn: document.getElementById('lodConfirmCalBtn'),
+      lodExportBtn: document.getElementById('lodExportBtn'),
+      lodSummary: document.getElementById('lodSummary'),
+      exportAllBtn: document.getElementById('exportAllBtn'),
+      runList: document.getElementById('runList'),
+      connDot: document.getElementById('connDot'),
+      connText: document.getElementById('connText'),
+      log: document.getElementById('log'),
+      pointsMetric: document.getElementById('pointsMetric'),
+      peakMetricLabel: document.getElementById('peakMetricLabel'),
+      peakMetric: document.getElementById('peakMetric'),
+      peakVoltageMetric: document.getElementById('peakVoltageMetric'),
+      stateMetric: document.getElementById('stateMetric'),
+      runsMetric: document.getElementById('runsMetric'),
+      ipeakStatsMetric: document.getElementById('ipeakStatsMetric'),
+      vpeakStatsMetric: document.getElementById('vpeakStatsMetric'),
+      sigmaStatsMetric: document.getElementById('sigmaStatsMetric'),
+      snrStatsMetric: document.getElementById('snrStatsMetric'),
+      batteryVbatMetric: document.getElementById('batteryVbatMetric'),
+      batterySocMetric: document.getElementById('batterySocMetric'),
+      batteryIbatMetric: document.getElementById('batteryIbatMetric'),
+      batteryVbusMetric: document.getElementById('batteryVbusMetric'),
+      batteryChargeMetric: document.getElementById('batteryChargeMetric'),
+      batteryDischargeMetric: document.getElementById('batteryDischargeMetric'),
+      batteryTempMetric: document.getElementById('batteryTempMetric'),
+      batteryFlagsMetric: document.getElementById('batteryFlagsMetric'),
+      batterySummary: document.getElementById('batterySummary'),
+      batteryLog: document.getElementById('batteryLog'),
+      highzTestStartBtn: document.getElementById('highzTestStartBtn'),
+      highzTestReleaseBtn: document.getElementById('highzTestReleaseBtn'),
+      highzTestResetBtn: document.getElementById('highzTestResetBtn'),
+      highzTestStatus: document.getElementById('highzTestStatus'),
+      highzTestLog: document.getElementById('highzTestLog'),
+    };
+
+    const defaultLegendClickHandler = Chart.defaults.plugins.legend.onClick;
+
+    const chart = new Chart(document.getElementById('swvChart'), {
+      type: 'line',
+      data: {
+        datasets: [
+          {
+            label: 'Delta_I avg3 (nA)',
+            data: [],
+            ...baseDatasetStyles[0],
+            tension: 0.05,
+          },
+          {
+            label: 'Delta_I raw (nA)',
+            data: [],
+            ...baseDatasetStyles[1],
+            tension: 0,
+          },
+          {
+            label: 'Delta_I smooth5 (nA)',
+            data: [],
+            ...baseDatasetStyles[2],
+            tension: 0.08,
+          },
+          {
+            label: 'Delta_I smooth7 (nA)',
+            data: [],
+            ...baseDatasetStyles[3],
+            tension: 0.08,
+          },
+          {
+            label: 'Delta_I SG5 (nA)',
+            data: [],
+            ...baseDatasetStyles[4],
+            tension: 0.08,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        parsing: false,
+        interaction: { mode: 'nearest', intersect: false },
+        plugins: {
+          legend: {
+            position: 'top',
+            onClick: (event, legendItem, legend) => {
+              const datasetIndex = legendItem.datasetIndex;
+              const native = event.native || event;
+
+              if (native.shiftKey || native.altKey) {
+                highlightedDatasetIndex = highlightedDatasetIndex === datasetIndex ? null : datasetIndex;
+                applyDatasetFocus();
+                return;
+              }
+
+              defaultLegendClickHandler.call(legend, event, legendItem, legend);
+              highlightedDatasetIndex = null;
+              applyDatasetFocus();
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)} nA @ ${ctx.parsed.x.toFixed(3)} mV`,
+            },
+          },
+          zoom: {
+            limits: {
+              x: { min: -600, max: 100, minRange: 1 },
+              y: { minRange: 0.01 },
+            },
+            pan: {
+              enabled: true,
+              mode: 'xy',
+              modifierKey: 'shift',
+            },
+            zoom: {
+              wheel: {
+                enabled: true,
+                speed: 0.08,
+              },
+              pinch: {
+                enabled: true,
+              },
+              drag: {
+                enabled: true,
+                backgroundColor: 'rgba(31, 111, 235, 0.12)',
+                borderColor: '#1f6feb',
+                borderWidth: 1,
+                modifierKey: 'ctrl',
+              },
+              mode: 'xy',
+            },
+          },
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            title: { display: true, text: 'Potential E_WE-RE (mV)' },
+          },
+          y: {
+            title: { display: true, text: 'Differential current (nA)' },
+          },
+        },
+      },
+      plugins: [peakSearchWindowPlugin, peakLabelPlugin],
+    });
+
+    const chartCanvas = document.getElementById('swvChart');
+
+    function withAlpha(color, alpha) {
+      if (color.startsWith('#')) {
+        const hex = color.slice(1);
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+      return color;
+    }
+
+    function applyDatasetFocus() {
+      chart.data.datasets.forEach((dataset, index) => {
+        const base = baseDatasetStyles[index];
+        const focused = highlightedDatasetIndex === null || highlightedDatasetIndex === index;
+        dataset.borderColor = focused ? base.borderColor : withAlpha(base.borderColor, 0.18);
+        dataset.backgroundColor = focused ? base.backgroundColor : withAlpha(base.borderColor, 0.04);
+        dataset.borderWidth = focused ? base.borderWidth : 1;
+        dataset.pointRadius = focused ? base.pointRadius : 0.8;
+        dataset.pointHoverRadius = focused ? base.pointRadius + 2 : 1.5;
+      });
+      chart.update('none');
+    }
+
+    function resetChartView() {
+      if (typeof chart.resetZoom === 'function') {
+        chart.resetZoom();
+      } else {
+        log('Zoom plugin is not loaded; reload the page with internet access.', 'ERR');
+      }
+    }
+
+    function zoomChart(factor) {
+      if (typeof chart.zoom === 'function') {
+        chart.zoom(factor);
+      } else {
+        log('Zoom plugin is not loaded; reload the page with internet access.', 'ERR');
+      }
+    }
+
+    chartCanvas.addEventListener('dblclick', resetChartView);
+
+    function log(line, kind = '') {
+      const prefix = kind ? `[${kind}] ` : '';
+      el.log.textContent += `${prefix}${line}\n`;
+      el.log.scrollTop = el.log.scrollHeight;
+    }
+
+    function batteryLog(line, kind = '') {
+      const prefix = kind ? `[${kind}] ` : '';
+      el.batteryLog.textContent += `${prefix}${line}\n`;
+      el.batteryLog.scrollTop = el.batteryLog.scrollHeight;
+    }
+
+    function highzTestLog(line, kind = '') {
+      const prefix = kind ? `[${kind}] ` : '';
+      el.highzTestLog.textContent += `${prefix}${line}\n`;
+      el.highzTestLog.scrollTop = el.highzTestLog.scrollHeight;
+    }
+
+    function showPage(page) {
+      const battery = page === 'battery';
+      const highz = page === 'highz';
+      el.measurementPage.classList.toggle('hidden', battery || highz);
+      el.highzPage.classList.toggle('hidden', !highz);
+      el.batteryPage.classList.toggle('hidden', !battery);
+      el.measurementPageBtn.classList.toggle('active', !battery && !highz);
+      el.highzPageBtn.classList.toggle('active', highz);
+      el.batteryPageBtn.classList.toggle('active', battery);
+    }
+
+    function formatMaybeNumber(value, unit, scale = 1, digits = 0) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return '--';
+      return `${(number / scale).toFixed(digits)} ${unit}`;
+    }
+
+    function formatBatteryCurrent(value, state) {
+      const ua = Number(value);
+      if (!Number.isFinite(ua)) return '--';
+      const ma = ua / 1000;
+      const suffix = state ? ` (${state.replace(/_/g, ' ')})` : '';
+      return `${ma.toFixed(2)} mA${suffix}`;
+    }
+
+    function renderBatteryStatus() {
+      const vbatMv = Number(batteryStatus.VBAT_MV);
+      const soc = Number(batteryStatus.SOC_PCT);
+      const ntcMc = Number(batteryStatus.NTC_MC);
+      const dieMc = Number(batteryStatus.DIE_MC);
+      const warnings = [batteryStatus.WARNING, batteryStatus.NOTE].filter(Boolean);
+
+      el.batteryVbatMetric.textContent = Number.isFinite(vbatMv)
+        ? `${vbatMv} mV (${(vbatMv / 1000).toFixed(3)} V)`
+        : '--';
+      el.batterySocMetric.textContent = Number.isFinite(soc)
+        ? `${soc}% ${batteryStatus.SOC_NOTE ? `(${batteryStatus.SOC_NOTE.replace(/_/g, ' ')})` : ''}`
+        : '--';
+      el.batteryIbatMetric.textContent = formatBatteryCurrent(
+        batteryStatus.IBAT_UA,
+        batteryStatus.IBAT_STATE,
+      );
+      el.batteryVbusMetric.textContent = batteryStatus.VBUS_STATE
+        ? `${formatMaybeNumber(batteryStatus.VBUS_LIMIT_UA, 'mA', 1000, 0)} (${batteryStatus.VBUS_STATE.replace(/_/g, ' ')})`
+        : '--';
+      el.batteryChargeMetric.textContent = formatMaybeNumber(
+        batteryStatus.CHARGE_CURRENT_UA,
+        'mA',
+        1000,
+        0,
+      );
+      el.batteryDischargeMetric.textContent = formatMaybeNumber(
+        batteryStatus.DISCHARGE_LIMIT_UA,
+        'mA',
+        1000,
+        0,
+      );
+      el.batteryTempMetric.textContent = [
+        Number.isFinite(ntcMc) ? `NTC ${(ntcMc / 1000).toFixed(1)} C` : 'NTC --',
+        Number.isFinite(dieMc) ? `die ${(dieMc / 1000).toFixed(1)} C` : 'die --',
+      ].join(' / ');
+      el.batteryFlagsMetric.textContent = [
+        `status ${batteryStatus.CHG_STATUS || '--'}`,
+        `error ${batteryStatus.CHG_ERROR || '--'}`,
+      ].join(', ');
+
+      el.batterySummary.textContent = [
+        batteryStatus.lastUpdated ? `Last update: ${batteryStatus.lastUpdated}` : 'No battery snapshot received yet.',
+        'IBAT sign follows Zephyr nPM1300 driver: negative = charging, positive = discharging.',
+        batteryStatus.NTC_NOTE === 'FIXED_10K_NOT_CELL_TEMP'
+          ? 'NTC reading is from the fitted 10k resistor and is not real cell temperature.'
+          : '',
+        warnings.length ? `Notes: ${warnings.join(', ')}` : '',
+      ].filter(Boolean).join('\n');
+    }
+
+    function handleBatteryLine(parts, line) {
+      batteryLog(line, 'RX');
+      if (parts[1] === 'START') {
+        batteryStatus = { lastStarted: new Date().toLocaleTimeString() };
+        renderBatteryStatus();
+        return;
+      }
+
+      const metadata = parseKeyValueParts(parts, 1);
+      batteryStatus = {
+        ...batteryStatus,
+        ...metadata,
+        lastUpdated: new Date().toLocaleTimeString(),
+      };
+      renderBatteryStatus();
+
+      if (parts[1] === 'DONE' || parts[1] === 'SNAPSHOT') {
+        batteryRequestPending = false;
+        if (batteryRequestTimer !== null) {
+          clearTimeout(batteryRequestTimer);
+          batteryRequestTimer = null;
+        }
+        updateControls();
+        batteryLog('Battery status snapshot complete.', 'SYS');
+      }
+    }
+
+    function setConnected(connected) {
+      el.connDot.classList.toggle('connected', connected);
+      el.connText.textContent = connected ? `Connected: ${device?.name || 'NanoStat'}` : 'Disconnected';
+      el.connectBtn.disabled = connected;
+      el.disconnectBtn.disabled = !connected;
+      el.pingBtn.disabled = !connected;
+      el.statusBtn.disabled = !connected;
+      el.readBtn.disabled = !connected;
+      updateControls();
+    }
+
+    function setScanState(state) {
+      scanState = state;
+      const label = {
+        idle: rxChar ? 'Ready' : 'Idle',
+        queued: 'Queued',
+        scanning: 'Scanning',
+        review: 'Done - locked',
+        error: 'Error',
+      }[state] || state;
+      el.stateMetric.textContent = label;
+      updateControls();
+    }
+
+    function selectedMeasurementMode() {
+      return el.modeSelect.value === 'dummy' ? 'dummy' : 'blank';
+    }
+
+    function updateModeUi() {
+      const dummyMode = selectedMeasurementMode() === 'dummy';
+
+      el.dummyControls.classList.toggle('hidden', !dummyMode);
+      el.dummyControls2.classList.toggle('hidden', !dummyMode);
+      el.dummySessionPanel.classList.toggle('hidden', !dummyMode);
+      el.startBtn.textContent = dummyMode ? 'Start Dummy' : 'Start Blank';
+    }
+
+    function updateControls() {
+      const connected = !!rxChar;
+      const canStart = connected && (scanState === 'idle' || scanState === 'error');
+      const dummyMode = selectedMeasurementMode() === 'dummy';
+      const locked = scanState === 'queued' || scanState === 'scanning';
+      const sessionActive = !!dummySession?.active;
+
+      updateModeUi();
+      el.startBtn.disabled = !canStart;
+      el.highZBtn.disabled = !connected;
+      el.lodBlankBtn.disabled = !canStart || dummyMode;
+      el.lodCalBtn.disabled = !canStart || dummyMode;
+      el.nextRunBtn.disabled = !(connected && scanState === 'review');
+      el.batteryRefreshBtn.disabled = !connected || batteryRequestPending;
+      el.highzTestStartBtn.disabled = !connected || locked || highzTestHolding;
+      el.highzTestReleaseBtn.disabled = !connected || (!highzTestHolding && !highzTestRequestPending);
+      el.highzTestResetBtn.disabled = !connected || highzTestRequestPending;
+      el.exportBtn.disabled = swvRows.length === 0;
+      el.exportAllBtn.disabled = savedRuns.length === 0;
+      el.lodConfirmBlankBtn.disabled = dummyMode || lodBlankRuns().length < 5;
+      el.lodConfirmCalBtn.disabled = dummyMode || lodCalibrationRuns().length < 2;
+      el.lodExportBtn.disabled = dummyMode || !lodBlankConfirmed || !lodCalibrationConfirmed;
+      el.freqInput.disabled = locked || sessionActive;
+      el.modeSelect.disabled = locked || sessionActive;
+      el.tiaSelect.disabled = locked || sessionActive;
+      el.dummyProfileSelect.disabled = locked || !dummyMode || sessionActive;
+      el.dummyResistorInput.disabled = locked || !dummyMode || sessionActive;
+      el.dummyRepeatInput.disabled = locked || !dummyMode;
+      el.powerSourceInput.disabled = locked || !dummyMode || sessionActive;
+      el.dummySessionRepeatInput.disabled = locked || !dummyMode || sessionActive;
+      el.startDummySessionBtn.disabled = !connected || !dummyMode || sessionActive || locked;
+      el.exportDummySessionBtn.disabled = !dummySession || dummySession.runs.length === 0;
+      el.peakMethodSelect.disabled = locked || dummyMode;
+      el.concentrationInput.disabled = locked || dummyMode;
+      el.concentrationUnit.disabled = locked || dummyMode;
+    }
+
+    function resetScan() {
+      swvRows = [];
+      highlightedDatasetIndex = null;
+      currentScanMetricRecorded = false;
+      currentScanSaved = false;
+      for (const dataset of chart.data.datasets) {
+        dataset.data = [];
+      }
+      chart.update();
+      el.pointsMetric.textContent = '0';
+      el.peakMetricLabel.textContent = currentScanMode === 'dummy'
+        ? 'Mean Delta_I'
+        : `Peak ${selectedPeakMethod().label}`;
+      el.peakMetric.textContent = '--';
+      el.peakVoltageMetric.textContent = currentScanMode === 'dummy' ? '-- expected' : '--';
+      updateControls();
+    }
+
+    function resetRunMetrics() {
+      swvRunMetrics = [];
+      updateRunMetricsDisplay();
+    }
+
+    function setCurrentScanFrequency(freq) {
+      const numericFreq = Number(freq);
+      if (Number.isInteger(numericFreq) && numericFreq >= 1 && numericFreq <= 250) {
+        currentScanFrequencyHz = numericFreq;
+      }
+    }
+
+    function snapshotRunMetadata() {
+      currentScanTiaMode = el.tiaSelect.value || 'HSTIA160K';
+      currentScanConcentration = el.concentrationInput.value.trim();
+      currentScanConcentrationUnit = el.concentrationUnit.value || 'blank';
+      currentScanMode = selectedMeasurementMode();
+      currentDummyProfile = el.dummyProfileSelect.value || '5MV';
+      currentDummyResistorOhm = Number(el.dummyResistorInput.value);
+      currentDummyPowerSource = el.powerSourceInput.value || 'battery';
+      return {
+        mode: currentScanMode,
+        tiaMode: currentScanTiaMode,
+        concentration: currentScanConcentration,
+        concentrationUnit: currentScanConcentrationUnit,
+        dummyProfile: currentDummyProfile,
+        dummyResistorOhm: currentScanMode === 'dummy' ? currentDummyResistorValue() : currentDummyResistorOhm,
+        dummyPowerSource: currentDummyPowerSource,
+      };
+    }
+
+    function concentrationNumeric(run) {
+      const value = Number(run?.concentration);
+      return Number.isFinite(value) ? value : NaN;
+    }
+
+    function lodBlankRuns() {
+      return savedRuns.filter((run) => run.workflow === 'lod_blank');
+    }
+
+    function lodCalibrationRuns() {
+      return savedRuns.filter((run) => run.workflow === 'lod_cal' &&
+        Number.isFinite(concentrationNumeric(run)));
+    }
+
+    function linearRegressionSlope(points) {
+      if (points.length < 2) return NaN;
+      const xs = points.map((p) => p.x);
+      const ys = points.map((p) => p.y);
+      const xMean = mean(xs);
+      const yMean = mean(ys);
+      let num = 0;
+      let den = 0;
+      for (let i = 0; i < points.length; i += 1) {
+        num += (xs[i] - xMean) * (ys[i] - yMean);
+        den += (xs[i] - xMean) ** 2;
+      }
+      return den > 0 ? num / den : NaN;
+    }
+
+    function aggregateLodResponses(points) {
+      const groups = new Map();
+      points.forEach((point) => {
+        if (!Number.isFinite(point.x) || point.x <= 0 || !Number.isFinite(point.responsePct)) return;
+        const key = String(point.x);
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(point.responsePct);
+      });
+      return [...groups.entries()]
+        .map(([key, values]) => ({
+          concentration: Number(key),
+          logConcentration: Math.log10(Number(key)),
+          responsePct: mean(values),
+          n: values.length,
+        }))
+        .sort((a, b) => a.concentration - b.concentration);
+    }
+
+    function firstFunctionalLodCrossing(points, thresholdPct) {
+      if (!Number.isFinite(thresholdPct) || points.length === 0) {
+        return { status: 'invalid', lod: NaN, label: '--', bracket: '' };
+      }
+      for (let i = 0; i < points.length; i += 1) {
+        const point = points[i];
+        if (point.responsePct < thresholdPct) continue;
+        if (i === 0) {
+          return {
+            status: 'below_first_tested_point',
+            lod: point.concentration,
+            label: `<= ${point.concentration}`,
+            bracket: `<= ${point.concentration}`,
+          };
+        }
+        const previous = points[i - 1];
+        const frac = point.responsePct === previous.responsePct
+          ? 1
+          : (thresholdPct - previous.responsePct) / (point.responsePct - previous.responsePct);
+        const logLod = previous.logConcentration +
+          Math.max(0, Math.min(1, frac)) * (point.logConcentration - previous.logConcentration);
+        const lod = 10 ** logLod;
+        return {
+          status: 'interpolated',
+          lod,
+          label: fmt(lod, 6),
+          bracket: `${previous.concentration}-${point.concentration}`,
+        };
+      }
+      const last = points[points.length - 1];
+      return {
+        status: 'above_tested_range',
+        lod: NaN,
+        label: `> ${last.concentration}`,
+        bracket: `> ${last.concentration}`,
+      };
+    }
+
+    function computeLodStats() {
+      const blanks = lodBlankRuns();
+      const cals = lodCalibrationRuns();
+      const blankPeaks = blanks.map((run) => run.metrics.iPeak).filter(Number.isFinite);
+      const blankPeakMean = mean(blankPeaks);
+      const blankSigma = sampleStd(blankPeaks);
+      const calibrationPoints = cals.map((run) => ({
+        x: concentrationNumeric(run),
+        y: run.metrics.iPeak,
+      })).filter((point) => Number.isFinite(point.x) && Number.isFinite(point.y));
+      const slope = linearRegressionSlope(calibrationPoints);
+      const lod = Number.isFinite(slope) && slope !== 0 ? (3 * blankSigma) / Math.abs(slope) : NaN;
+      const unit = cals[0]?.concentrationUnit || el.concentrationUnit.value || '';
+      const responseRaw = calibrationPoints.map((point) => ({
+        x: point.x,
+        responsePct: Number.isFinite(blankPeakMean)
+          ? ((point.y - blankPeakMean) / Math.abs(blankPeakMean)) * 100
+          : NaN,
+      }));
+      const responsePoints = aggregateLodResponses(responseRaw);
+      const sigmaBlankPct = Number.isFinite(blankPeakMean) && blankPeakMean !== 0
+        ? (blankSigma / Math.abs(blankPeakMean)) * 100
+        : NaN;
+      const functionalThresholdPct = 3 * sigmaBlankPct;
+      const functionalLod = firstFunctionalLodCrossing(responsePoints, functionalThresholdPct);
+
+      return {
+        blanks,
+        cals,
+        blankPeaks,
+        blankPeakMean,
+        blankSigma,
+        sigmaBlankPct,
+        functionalThresholdPct,
+        responsePoints,
+        functionalLod,
+        calibrationPoints,
+        slope,
+        lod,
+        unit,
+      };
+    }
+
+    function updateLodSummary() {
+      const stats = computeLodStats();
+      el.lodSummary.textContent =
+        `Blank: ${stats.blanks.length}/5 confirmed? ${lodBlankConfirmed ? 'yes' : 'no'}\n` +
+        `Blank I_peak mean=${fmt(stats.blankPeakMean, 3, ' nA')}, SD=${fmt(stats.blankSigma, 3, ' nA')}\n` +
+        `Blank response sigma=${fmt(stats.sigmaBlankPct, 3, '%')}, R_LOD=3*sigma=${fmt(stats.functionalThresholdPct, 3, '%')}\n` +
+        `Calibration: ${stats.cals.length} runs confirmed? ${lodCalibrationConfirmed ? 'yes' : 'no'}\n` +
+        `Functional LOD crossing=${stats.functionalLod.label}${stats.unit ? ` ${stats.unit}` : ''} (${stats.functionalLod.status})\n` +
+        `Linear diagnostic: slope=${fmt(stats.slope, 6, ` nA/${stats.unit}`)}, LOD=${fmt(stats.lod, 6, ` ${stats.unit}`)}`;
+      updateControls();
+    }
+
+    function nextRunId() {
+      return savedRuns.reduce((maxId, run) => Math.max(maxId, run.id || 0), 0) + 1;
+    }
+
+    function runDisplayNumber(run) {
+      const index = savedRuns.findIndex((item) => item.id === run.id);
+      return index >= 0 ? index + 1 : run.id;
+    }
+
+    function runLabel(run) {
+      if (run.mode === 'dummy' || run.metrics?.mode === 'dummy') {
+        return `Run ${runDisplayNumber(run)}: dummy ${run.metrics?.profile || run.dummyProfile}, ` +
+               `${run.frequencyHz}Hz, ${run.tiaMode}, R=${run.dummyResistorOhm} ohm, ` +
+               `mean=${fmt(run.metrics?.meanDelta, 3, ' nA')}, SD=${fmt(run.metrics?.sdDelta, 3, ' nA')}, ` +
+               `error=${fmt(run.metrics?.errorPct, 2, '%')}`;
+      }
+
+      const conc = run.concentration
+        ? `${run.concentration} ${run.concentrationUnit}`
+        : run.concentrationUnit === 'blank' ? 'blank' : run.concentrationUnit;
+      const workflow = run.workflow && run.workflow !== 'manual' ? `${run.workflow}, ` : '';
+      const method = run.metrics?.peakMethodLabel || run.metrics?.peakMethod || 'SG5';
+      return `Run ${runDisplayNumber(run)}: ${workflow}${run.frequencyHz}Hz, ${run.tiaMode}, ${method}, ${conc}, ` +
+             `I=${fmt(run.metrics?.iPeak, 3, ' nA')}, V=${fmt(run.metrics?.vPeak, 2, ' mV')}`;
+    }
+
+    function renderRunList() {
+      if (savedRuns.length === 0) {
+        el.runList.textContent = 'No saved runs yet.';
+        updateLodSummary();
+        updateControls();
+        return;
+      }
+
+      el.runList.innerHTML = savedRuns.map((run) => (
+        `<div class="run-item" data-run-id="${run.id}">` +
+        `<span>${runLabel(run)}</span>` +
+        `<button type="button" data-delete-run="${run.id}">Delete</button>` +
+        `</div>`
+      )).join('');
+      updateLodSummary();
+      updateControls();
+    }
+
+    function centeredMean(rows, index, radius, key = 'delta') {
+      let sum = 0;
+      let count = 0;
+      const start = Math.max(0, index - radius);
+      const end = Math.min(rows.length - 1, index + radius);
+      for (let i = start; i <= end; i += 1) {
+        const value = rows[i]?.[key];
+        if (Number.isFinite(value)) {
+          sum += value;
+          count += 1;
+        }
+      }
+      return count > 0 ? sum / count : NaN;
+    }
+
+    function mean(values) {
+      if (values.length === 0) return NaN;
+      return values.reduce((sum, value) => sum + value, 0) / values.length;
+    }
+
+    function sampleStd(values) {
+      if (values.length < 2) return 0;
+      const avg = mean(values);
+      const variance = values.reduce((sum, value) => sum + ((value - avg) ** 2), 0) / (values.length - 1);
+      return Math.sqrt(variance);
+    }
+
+    function fmt(value, digits = 3, unit = '') {
+      if (!Number.isFinite(value)) return '--';
+      return `${value.toFixed(digits)}${unit}`;
+    }
+
+    function csvCell(value) {
+      const text = value === undefined || value === null ? '' : String(value);
+      return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+    }
+
+    function selectedPeakMethod() {
+      const method = PEAK_METHODS[el.peakMethodSelect.value] || PEAK_METHODS.sg5;
+      return method;
+    }
+
+    function computeScanMetrics() {
+      enrichSmoothingRows();
+      if (swvRows.length < 8) return null;
+
+      const peakMethod = selectedPeakMethod();
+      const peakKey = peakMethod.key;
+      const edgeDrop = 5;
+      const peakWindowMv = 50;
+      const candidates = swvRows
+        .map((row, index) => ({ ...row, index }))
+        .filter((row) => Number.isFinite(row[peakKey]) &&
+                         row.v >= PEAK_SEARCH_MIN_MV &&
+                         row.v <= PEAK_SEARCH_MAX_MV &&
+                         row.index >= edgeDrop &&
+                         row.index < swvRows.length - edgeDrop);
+
+      const allFiniteRows = swvRows
+        .map((row, index) => ({ ...row, index }))
+        .filter((row) => Number.isFinite(row[peakKey]));
+      const peakCandidates = candidates.length > 0 ? candidates : allFiniteRows;
+      if (peakCandidates.length === 0) return null;
+      let peak = peakCandidates[0];
+      for (const row of peakCandidates) {
+        if (Math.abs(row[peakKey]) > Math.abs(peak[peakKey])) {
+          peak = row;
+        }
+      }
+
+      let baselineRows = candidates.filter((row) => Math.abs(row.v - peak.v) > peakWindowMv);
+      if (baselineRows.length < 8) {
+        baselineRows = swvRows
+          .map((row, index) => ({ ...row, index }))
+          .filter((row) => Number.isFinite(row[peakKey]) && Math.abs(row.v - peak.v) > peakWindowMv);
+      }
+      if (baselineRows.length < 3) {
+        baselineRows = peakCandidates;
+      }
+
+      const baselineValues = baselineRows.map((row) => row[peakKey]);
+      const sigma = sampleStd(baselineValues);
+      const baselineAvg = mean(baselineValues);
+      const snr = sigma > 0 ? Math.abs(peak[peakKey]) / sigma : NaN;
+      const freq = currentScanFrequencyHz ?? Number(el.freqInput.value);
+
+      return {
+        frequencyHz: Number.isFinite(freq) ? Number(freq) : NaN,
+        points: swvRows.length,
+        peakMethod: peakMethod.key,
+        peakMethodLabel: peakMethod.label,
+        peakColumn: peakMethod.exportName,
+        iPeak: peak[peakKey],
+        vPeak: peak.v,
+        baselineMean: baselineAvg,
+        sigmaBaseline: sigma,
+        snr,
+        baselinePoints: baselineRows.length,
+      };
+    }
+
+    function parseKeyValueParts(parts, startIndex = 2) {
+      const metadata = {};
+      for (let i = startIndex; i < parts.length; i += 1) {
+        const item = parts[i];
+        const eq = item.indexOf('=');
+        if (eq <= 0) continue;
+        metadata[item.slice(0, eq)] = item.slice(eq + 1);
+      }
+      return metadata;
+    }
+
+    function numberFromMetadata(metadata, key) {
+      if (!metadata || !Object.prototype.hasOwnProperty.call(metadata, key)) {
+        return NaN;
+      }
+      const value = Number(metadata[key]);
+      return Number.isFinite(value) ? value : NaN;
+    }
+
+    function currentDummyResistorValue() {
+      const candidates = [
+        numberFromMetadata(currentDoneMetadata, 'RDUMMY'),
+        numberFromMetadata(currentDummyFirmwareMetadata, 'RDUMMY'),
+        Number(el.dummyResistorInput.value),
+        currentDummyResistorOhm,
+      ];
+
+      return candidates.find((value) => Number.isFinite(value) && value > 0) ?? NaN;
+    }
+
+    function dummyExpectedDeltaNa() {
+      const doneExpected = numberFromMetadata(currentDoneMetadata, 'EXPECTED_DELTA_NA');
+      if (Number.isFinite(doneExpected)) {
+        return doneExpected;
+      }
+
+      const headerExpected = numberFromMetadata(currentDummyFirmwareMetadata, 'EXPECTED_DELTA_NA');
+      if (Number.isFinite(headerExpected)) {
+        return headerExpected;
+      }
+
+      const resistor = currentDummyResistorValue();
+      const pulseMv = numberFromMetadata(currentDummyFirmwareMetadata, 'PULSE_MV') ||
+        numberFromMetadata(currentDoneMetadata, 'PULSE_MV') ||
+        DUMMY_SWV_PULSE_MV_FALLBACK;
+      if (Number.isFinite(resistor) && resistor > 0 && Number.isFinite(pulseMv)) {
+        return (2 * pulseMv / resistor) * 1e6;
+      }
+
+      return NaN;
+    }
+
+    function computeDummyMetrics() {
+      enrichSmoothingRows();
+      const values = swvRows
+        .map((row) => Number(row.delta))
+        .filter(Number.isFinite);
+      const trimmed = values.length > 4 ? values.slice(2, -2) : values;
+      const expected = dummyExpectedDeltaNa();
+      const meanDelta = mean(trimmed);
+      const sdDelta = sampleStd(trimmed);
+      const errorPct = Number.isFinite(expected) && expected !== 0
+        ? (Math.abs(meanDelta - expected) / Math.abs(expected)) * 100
+        : NaN;
+      const profile = currentDummyFirmwareMetadata.PROFILE || currentDummyProfile;
+      const scanMs = Number(currentDoneMetadata.SCAN_MS || currentDummyFirmwareMetadata.SCAN_MS);
+      const firmwareMean = Number(currentDoneMetadata.MEAN_DELTA_NA);
+      const firmwareSd = Number(currentDoneMetadata.SD_DELTA_NA);
+      const firmwareError = numberFromMetadata(currentDoneMetadata, 'ERROR_PCT');
+      const boundaryJumps = [];
+
+      if (profile === '1MVSEG') {
+        [150, 300].forEach((index) => {
+          if (index > 0 && index < values.length &&
+              Number.isFinite(values[index]) &&
+              Number.isFinite(values[index - 1])) {
+            boundaryJumps.push(Math.abs(values[index] - values[index - 1]));
+          }
+        });
+      }
+
+      return {
+        mode: 'dummy',
+        frequencyHz: currentScanFrequencyHz ?? Number(el.freqInput.value),
+        tiaMode: currentScanTiaMode,
+        profile,
+        dummyResistorOhm: currentDummyResistorValue(),
+        powerSource: currentDummyPowerSource,
+        points: swvRows.length,
+        validPoints: values.length,
+        invalidPoints: swvRows.length - values.length,
+        trimmedPoints: trimmed.length,
+        meanDelta,
+        sdDelta,
+        expectedDelta: expected,
+        errorPct: Number.isFinite(firmwareError) ? firmwareError : errorPct,
+        firmwareMeanDelta: Number.isFinite(firmwareMean) ? firmwareMean : NaN,
+        firmwareSdDelta: Number.isFinite(firmwareSd) ? firmwareSd : NaN,
+        scanMs: Number.isFinite(scanMs) ? scanMs : NaN,
+        maxSegmentBoundaryJump: boundaryJumps.length > 0 ? Math.max(...boundaryJumps) : NaN,
+      };
+    }
+
+    function updateDummyFromRows() {
+      if (swvRows.length === 0) return;
+      const metrics = computeDummyMetrics();
+
+      el.peakMetricLabel.textContent = 'Mean Delta_I';
+      el.peakMetric.textContent = fmt(metrics.meanDelta, 3, ' nA');
+      el.peakVoltageMetric.textContent = `Expected ${fmt(metrics.expectedDelta, 3, ' nA')}`;
+    }
+
+    function recordCurrentScanMetrics() {
+      if (currentScanMetricRecorded || swvRows.length === 0) return;
+      if (currentScanMode === 'dummy') {
+        const metrics = computeDummyMetrics();
+
+        currentScanMetricRecorded = true;
+        updateRunMetricsDisplay();
+        log(
+          `Dummy metrics ${metrics.frequencyHz}Hz ${metrics.profile}: mean=${fmt(metrics.meanDelta, 3, ' nA')}, ` +
+          `SD=${fmt(metrics.sdDelta, 3, ' nA')}, expected=${fmt(metrics.expectedDelta, 3, ' nA')}, ` +
+          `error=${fmt(metrics.errorPct, 2, '%')}, points=${metrics.points}`,
+          'STAT',
+        );
+        return;
+      }
+
+      const metrics = computeScanMetrics();
+      if (!metrics) return;
+
+      swvRunMetrics.push(metrics);
+      currentScanMetricRecorded = true;
+      updateRunMetricsDisplay();
+      log(
+        `Peak metrics ${metrics.frequencyHz}Hz (${metrics.peakMethodLabel}): I_peak=${metrics.iPeak.toFixed(3)} nA, ` +
+        `V_peak=${metrics.vPeak.toFixed(3)} mV, sigma=${metrics.sigmaBaseline.toFixed(3)} nA, ` +
+        `SNR=${metrics.snr.toFixed(2)}, baseline_n=${metrics.baselinePoints}`,
+        'STAT',
+      );
+    }
+
+    function saveCurrentRun() {
+      if (currentScanSaved || swvRows.length === 0) return;
+      const metrics = currentScanMode === 'dummy' ? computeDummyMetrics() : computeScanMetrics();
+      if (!metrics) return;
+
+      currentRunId = nextRunId();
+      savedRuns.push({
+        id: currentRunId,
+        timestamp: new Date().toISOString(),
+        frequencyHz: metrics.frequencyHz,
+        mode: currentScanMode,
+        tiaMode: currentScanTiaMode,
+        concentration: currentScanConcentration,
+        concentrationUnit: currentScanConcentrationUnit,
+        dummyProfile: currentDummyProfile,
+        dummyResistorOhm: currentDummyResistorOhm,
+        dummyPowerSource: currentDummyPowerSource,
+        dummyFirmwareMetadata: { ...currentDummyFirmwareMetadata },
+        doneMetadata: { ...currentDoneMetadata },
+        workflow: currentScanWorkflow,
+        dummySessionId: dummySession?.active ? dummySession.id : '',
+        dummySessionIndex: dummySession?.active ? dummySession.index : '',
+        metrics,
+        rows: swvRows.map((row) => ({ ...row })),
+      });
+      currentScanSaved = true;
+      if (dummySession?.active && currentScanWorkflow === 'dummy_session') {
+        dummySession.runs.push(savedRuns[savedRuns.length - 1]);
+      }
+      renderRunList();
+      log(`Saved ${runLabel(savedRuns[savedRuns.length - 1])}`, 'RUN');
+    }
+
+    function updateRunMetricsDisplay() {
+      const freq = currentScanFrequencyHz ?? Number(el.freqInput.value);
+      if (selectedMeasurementMode() === 'dummy' || currentScanMode === 'dummy') {
+        const dummyRuns = savedRuns.filter((run) => run.mode === 'dummy' || run.metrics?.mode === 'dummy');
+        const selectedDummy = Number.isFinite(freq)
+          ? dummyRuns.filter((run) => run.frequencyHz === Number(freq))
+          : dummyRuns;
+
+        el.runsMetric.textContent = String(selectedDummy.length);
+        if (selectedDummy.length === 0) {
+          el.ipeakStatsMetric.textContent = '--';
+          el.vpeakStatsMetric.textContent = '--';
+          el.sigmaStatsMetric.textContent = '--';
+          el.snrStatsMetric.textContent = '--';
+          return;
+        }
+
+        const means = selectedDummy.map((run) => run.metrics?.meanDelta).filter(Number.isFinite);
+        const expected = selectedDummy.map((run) => run.metrics?.expectedDelta).filter(Number.isFinite);
+        const sigmas = selectedDummy.map((run) => run.metrics?.sdDelta).filter(Number.isFinite);
+        const errors = selectedDummy.map((run) => run.metrics?.errorPct).filter(Number.isFinite);
+
+        el.ipeakStatsMetric.textContent = `${fmt(mean(means), 3, ' nA')} / ${fmt(sampleStd(means), 3, ' nA')}`;
+        el.vpeakStatsMetric.textContent = `${fmt(mean(expected), 3, ' nA')} / ${fmt(sampleStd(expected), 3, ' nA')}`;
+        el.sigmaStatsMetric.textContent = `${fmt(mean(sigmas), 3, ' nA')} / ${fmt(sampleStd(sigmas), 3, ' nA')}`;
+        el.snrStatsMetric.textContent = fmt(mean(errors), 2, '% err');
+        return;
+      }
+
+      const selected = Number.isFinite(freq)
+        ? swvRunMetrics.filter((run) => run.mode !== 'dummy' && run.frequencyHz === Number(freq))
+        : swvRunMetrics.filter((run) => run.mode !== 'dummy');
+
+      el.runsMetric.textContent = String(selected.length);
+      if (selected.length === 0) {
+        el.ipeakStatsMetric.textContent = '--';
+        el.vpeakStatsMetric.textContent = '--';
+        el.sigmaStatsMetric.textContent = '--';
+        el.snrStatsMetric.textContent = '--';
+        return;
+      }
+
+      const iPeaks = selected.map((run) => run.iPeak);
+      const vPeaks = selected.map((run) => run.vPeak);
+      const sigmas = selected.map((run) => run.sigmaBaseline);
+      const snrs = selected.map((run) => run.snr).filter(Number.isFinite);
+
+      el.ipeakStatsMetric.textContent = `${fmt(mean(iPeaks), 3, ' nA')} / ${fmt(sampleStd(iPeaks), 3, ' nA')}`;
+      el.vpeakStatsMetric.textContent = `${fmt(mean(vPeaks), 2, ' mV')} / ${fmt(sampleStd(vPeaks), 2, ' mV')}`;
+      el.sigmaStatsMetric.textContent = `${fmt(mean(sigmas), 3, ' nA')} / ${fmt(sampleStd(sigmas), 3, ' nA')}`;
+      el.snrStatsMetric.textContent = fmt(mean(snrs), 2);
+    }
+
+    function savgol5(rows, index, key = 'delta') {
+      if (index < 2 || index + 2 >= rows.length) {
+        return centeredMean(rows, index, 2, key);
+      }
+      const y0 = rows[index - 2]?.[key];
+      const y1 = rows[index - 1]?.[key];
+      const y2 = rows[index]?.[key];
+      const y3 = rows[index + 1]?.[key];
+      const y4 = rows[index + 2]?.[key];
+      if (![y0, y1, y2, y3, y4].every(Number.isFinite)) {
+        return centeredMean(rows, index, 2, key);
+      }
+      return ((-3 * y0) + (12 * y1) + (17 * y2) + (12 * y3) - (3 * y4)) / 35;
+    }
+
+    function enrichSmoothingRows() {
+      swvRows = swvRows.map((row, index, rows) => ({
+        ...row,
+        smooth5: centeredMean(rows, index, 2),
+        smooth7: centeredMean(rows, index, 3),
+        sg5: savgol5(rows, index),
+      }));
+    }
+
+    function updateChart() {
+      enrichSmoothingRows();
+      chart.data.datasets[0].data = swvRows.map((r) => ({ x: r.v, y: r.delta3 }));
+      chart.data.datasets[1].data = swvRows.map((r) => ({ x: r.v, y: r.delta }));
+      chart.data.datasets[2].data = swvRows.map((r) => ({ x: r.v, y: r.smooth5 }));
+      chart.data.datasets[3].data = swvRows.map((r) => ({ x: r.v, y: r.smooth7 }));
+      chart.data.datasets[4].data = swvRows.map((r) => ({ x: r.v, y: r.sg5 }));
+      applyDatasetFocus();
+      el.pointsMetric.textContent = String(swvRows.length);
+      el.exportBtn.disabled = swvRows.length === 0;
+    }
+
+    function updatePeakFromRows() {
+      if (swvRows.length === 0) return;
+      if (currentScanMode === 'dummy') {
+        updateDummyFromRows();
+        return;
+      }
+
+      const metrics = computeScanMetrics();
+      if (!metrics) {
+        return;
+      }
+      el.peakMetric.textContent = `${metrics.iPeak.toFixed(3)} nA`;
+      el.peakMetricLabel.textContent = `Peak ${metrics.peakMethodLabel}`;
+      el.peakVoltageMetric.textContent = `${metrics.vPeak.toFixed(3)} mV`;
+    }
+
+    function parseLine(line) {
+      if (!line) return;
+      log(line, 'RX');
+
+      const parts = line.split(',').map((p) => p.trim());
+      const embeddedHighzHold = line.includes('EVT,HIGHZ_TEST,HOLD') || line.includes('EVT,HZ,HOLD');
+      const embeddedHighzReleased = line.includes('EVT,HIGHZ_TEST,RELEASED') || line.includes('EVT,HZ,RELEASED');
+      const isHighzTestLine = parts[0] === 'EVT' &&
+        ((parts[1] === 'STARTING' && parts[2] === 'HIGHZ_TEST') ||
+         parts[1] === 'HIGHZ_TEST') ||
+        embeddedHighzHold || embeddedHighzReleased ||
+        (parts[0] === 'OK' && parts[1] && parts[1].includes('HIGHZ_TEST')) ||
+        (parts[0] === 'ERR' && parts[1] && parts[1].includes('HIGHZ_TEST'));
+      if (isHighzTestLine || highzTestRequestPending || highzTestHolding) {
+        highzTestLog(line, 'RX');
+      }
+      if (parts[0] === 'BAT') {
+        handleBatteryLine(parts, line);
+        return;
+      }
+
+      if (parts[0] === 'EVT' && parts[1] === 'STARTING' && parts[2] === 'HIGHZ_TEST') {
+        highzTestRequestPending = false;
+        highzTestHolding = false;
+        el.highzTestStatus.textContent = 'Sweeping -400 mV to -200 mV...';
+        setScanState('scanning');
+        return;
+      }
+
+      if (parts[0] === 'EVT' && parts[1] === 'HIGHZ_TEST') {
+        if (parts[2] === 'HOLD') {
+          highzTestRequestPending = false;
+          highzTestHolding = true;
+          el.highzTestStatus.textContent = 'Holding approximately -200 mV. Press Apply High-Z to release the electrode path.';
+          setScanState('review');
+        } else if (parts[2] === 'RELEASED') {
+          highzTestRequestPending = false;
+          highzTestHolding = false;
+          el.highzTestStatus.textContent = 'High-Z applied. The electrode path is open and AFE outputs are off.';
+          setScanState('idle');
+        }
+        return;
+      }
+
+      if (embeddedHighzHold || embeddedHighzReleased) {
+        highzTestRequestPending = false;
+        highzTestHolding = embeddedHighzHold;
+        el.highzTestStatus.textContent = embeddedHighzHold
+          ? 'Holding approximately -200 mV. Press Apply High-Z to release the electrode path.'
+          : 'High-Z applied. The electrode path is open and AFE outputs are off.';
+        setScanState(embeddedHighzHold ? 'review' : 'idle');
+        return;
+      }
+
+      if (parts[0] === 'HDR' && parts[1] === 'DUMMY_SWV') {
+        currentScanMode = 'dummy';
+        el.modeSelect.value = 'dummy';
+        currentDummyFirmwareMetadata = parseKeyValueParts(parts);
+        currentDoneMetadata = {};
+        if (currentDummyFirmwareMetadata.PROFILE) {
+          currentDummyProfile = currentDummyFirmwareMetadata.PROFILE;
+          el.dummyProfileSelect.value = currentDummyProfile;
+        }
+        if (currentDummyFirmwareMetadata.FREQ) {
+          setCurrentScanFrequency(currentDummyFirmwareMetadata.FREQ);
+        }
+        if (currentDummyFirmwareMetadata.RDUMMY) {
+          currentDummyResistorOhm = Number(currentDummyFirmwareMetadata.RDUMMY);
+          el.dummyResistorInput.value = currentDummyFirmwareMetadata.RDUMMY;
+        }
+        resetScan();
+        setScanState('scanning');
+        return;
+      }
+
+      if (parts[0] === 'HDR' && parts[1] === 'SWV') {
+        resetScan();
+        setScanState('scanning');
+        return;
+      }
+
+      if (parts[0] === 'EVT' && (parts[1] === 'STARTING' || parts[1] === 'STARTED') && parts[2] === 'BLANK') {
+        currentScanMode = 'blank';
+        el.modeSelect.value = 'blank';
+        setCurrentScanFrequency(parts[3]);
+        if (parts[4]) {
+          currentScanTiaMode = parts[4];
+        }
+        updateRunMetricsDisplay();
+        return;
+      }
+
+      if (parts[0] === 'EVT' &&
+          (parts[1] === 'STARTING' || parts[1] === 'STARTED') &&
+          (parts[2] === 'DUMMY_SWV' || parts[2] === 'DUMMY_REPEAT')) {
+        currentScanMode = 'dummy';
+        el.modeSelect.value = 'dummy';
+        currentDummyProfile = parts[3] || currentDummyProfile;
+        setCurrentScanFrequency(parts[4]);
+        if (parts[5]) {
+          currentScanTiaMode = parts[5];
+        }
+        if (parts[6]) {
+          const resistor = Number(parts[6]);
+          if (Number.isFinite(resistor)) {
+            currentDummyResistorOhm = resistor;
+            el.dummyResistorInput.value = parts[6];
+          }
+        }
+        updateRunMetricsDisplay();
+        return;
+      }
+
+      if (parts[0] === 'DATA' && parts[1] === 'SWV' && parts.length >= 7) {
+        const extended = parts.length >= 10;
+        const row = extended
+          ? {
+              v: Number(parts[2]),
+              delta: Number(parts[3]),
+              delta3: Number(parts[4]),
+              smooth5: Number(parts[5]),
+              smooth7: Number(parts[6]),
+              sg5: Number(parts[7]),
+              ifwd: Number(parts[8]),
+              irev: Number(parts[9]),
+            }
+          : {
+              v: Number(parts[2]),
+              delta: Number(parts[3]),
+              delta3: Number(parts[4]),
+              ifwd: Number(parts[5]),
+              irev: Number(parts[6]),
+            };
+        if (Object.values(row).every(Number.isFinite)) {
+          swvRows.push(row);
+          if (swvRows.length % 5 === 0) {
+            updateChart();
+          }
+        }
+        return;
+      }
+
+      if (parts[0] === 'EVT' && parts[1] === 'DONE' && parts[2] === 'DUMMY_SWV') {
+        currentScanMode = 'dummy';
+        currentDoneMetadata = parseKeyValueParts(parts, 3);
+        updateChart();
+        updateDummyFromRows();
+        recordCurrentScanMetrics();
+        saveCurrentRun();
+        setScanState('review');
+        if (currentScanWorkflow === 'dummy_session') {
+          continueDummySession();
+        }
+        return;
+      }
+
+      if (parts[0] === 'EVT' && parts[1] === 'HIGHZ') {
+        if (scanState === 'queued' || scanState === 'scanning') {
+          setScanState('idle');
+        }
+        return;
+      }
+
+      if (parts[0] === 'EVT' && parts[1] === 'DONE') {
+        updateChart();
+        updatePeakFromRows();
+        recordCurrentScanMetrics();
+        saveCurrentRun();
+        setScanState('review');
+        if (swvRows.length === 0 && parts[3] === 'PEAK' && parts.length >= 7) {
+          el.peakVoltageMetric.textContent = `${Number(parts[5]).toFixed(3)} mV`;
+          el.peakMetric.textContent = `${Number(parts[6]).toFixed(3)} nA`;
+        }
+        return;
+      }
+
+      if (parts[0] === 'OK' || parts[0] === 'ERR' || parts[0] === 'STATUS') {
+        if (parts[0] === 'ERR') {
+          if (highzTestRequestPending || (parts[1] && parts[1].includes('HIGHZ_TEST'))) {
+            highzTestRequestPending = false;
+            if (parts[1] === 'BUSY') {
+              /* A completed validation scan intentionally keeps the AFE active.
+               * Treat BUSY as recoverable so the user can release that state. */
+              highzTestHolding = true;
+              el.highzTestStatus.textContent = 'The validation scan is already active or holding. Press Apply High-Z to release it.';
+            } else {
+              highzTestHolding = false;
+              el.highzTestStatus.textContent = `Firmware error: ${line}`;
+            }
+            updateControls();
+          }
+          if (batteryRequestPending) {
+            batteryRequestPending = false;
+            batteryLog(line, 'ERR');
+            updateControls();
+          }
+          setScanState('error');
+        } else if (parts[0] === 'OK' && parts[1] === 'QUEUED' && parts[2] === 'HIGHZ_TEST') {
+          el.highzTestStatus.textContent = 'Command accepted by firmware; waiting for scan start...';
+        } else if (parts[0] === 'OK' && parts[1] === 'STARTED' && parts[2] === 'HIGHZ_TEST') {
+          el.highzTestStatus.textContent = 'High-Z validation scan started.';
+        } else if (parts[0] === 'OK' && parts[1] === 'HIGHZ') {
+          highzTestRequestPending = false;
+          highzTestHolding = false;
+          el.highzTestStatus.textContent = 'High-Z applied. The electrode path is open and AFE outputs are off.';
+          setScanState('idle');
+        } else if (parts[0] === 'OK' && parts[1] === 'RESET' && parts[2] === 'HIGHZ_TEST') {
+          highzTestRequestPending = false;
+          highzTestHolding = false;
+          el.highzTestStatus.textContent = 'High-Z test reset. The device is ready for another validation scan.';
+          setScanState('idle');
+        }
+      }
+    }
+
+    function onNotify(event) {
+      rxBuffer += decoder.decode(event.target.value);
+      const lines = rxBuffer.split(/\r?\n/);
+      rxBuffer = lines.pop() || '';
+      for (const line of lines) {
+        parseLine(line.trim());
+      }
+    }
+
+    const BLE_WRITE_CHUNK_BYTES = 20;
+
+    function delayMs(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function writePayloadInChunks(payload, writer) {
+      for (let offset = 0; offset < payload.length; offset += BLE_WRITE_CHUNK_BYTES) {
+        const chunk = payload.slice(offset, offset + BLE_WRITE_CHUNK_BYTES);
+        await writer(chunk);
+        if (offset + BLE_WRITE_CHUNK_BYTES < payload.length) {
+          await delayMs(20);
+        }
+      }
+    }
+
+    function shuffled(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function updateDummySessionStatus() {
+      if (!dummySession) {
+        el.dummySessionStatus.textContent = 'No randomized session started.';
+        updateControls();
+        return;
+      }
+      const total = dummySession.order.length;
+      const completed = dummySession.runs.length;
+      const current = dummySession.active && dummySession.order[dummySession.index]
+        ? ` Next: ${dummySession.order[dummySession.index]}.`
+        : '';
+      el.dummySessionStatus.textContent = `${dummySession.status} ${completed}/${total} runs completed.${current}`;
+      updateControls();
+    }
+
+    function startDummySession() {
+      if (!rxChar || selectedMeasurementMode() !== 'dummy' || (scanState !== 'idle' && scanState !== 'review')) return;
+      const repeats = Number(el.dummySessionRepeatInput.value);
+      const resistor = Number(el.dummyResistorInput.value);
+      if (!Number.isInteger(repeats) || repeats < 1 || repeats > 20) {
+        log('Session repeats/profile must be an integer from 1 to 20.', 'ERR');
+        return;
+      }
+      if (!Number.isFinite(resistor) || resistor < 1000 || resistor > 100000000) {
+        log('Dummy resistor must be 1000..100000000 ohm.', 'ERR');
+        return;
+      }
+
+      const profiles = ['5MV', '2MV', '1MVSEG'];
+      const order = shuffled(profiles.flatMap((profile) => Array(repeats).fill(profile)));
+      dummySession = {
+        id: `session-${new Date().toISOString().replace(/[:.]/g, '-')}`,
+        startedAt: new Date().toISOString(),
+        repeatsPerProfile: repeats,
+        resistorOhm: Math.round(resistor),
+        powerSource: el.powerSourceInput.value || 'battery',
+        frequencyHz: Number(el.freqInput.value),
+        tiaMode: el.tiaSelect.value || 'HSTIA160K',
+        order,
+        index: 0,
+        runs: [],
+        active: true,
+        status: 'Session running.',
+      };
+      log(`Randomized dummy session started: ${order.length} runs (${repeats}/profile).`, 'SESSION');
+      updateDummySessionStatus();
+      runNextDummySessionScan();
+    }
+
+    function runNextDummySessionScan() {
+      if (!dummySession?.active) return;
+      if (dummySession.index >= dummySession.order.length) {
+        dummySession.active = false;
+        dummySession.status = 'Session complete.';
+        log(`Randomized dummy session complete: ${dummySession.runs.length} runs.`, 'SESSION');
+        updateDummySessionStatus();
+        return;
+      }
+      const profile = dummySession.order[dummySession.index];
+      el.dummyProfileSelect.value = profile;
+      updateDummySessionStatus();
+      startSwvRun('dummy_session');
+    }
+
+    function continueDummySession() {
+      if (!dummySession?.active) return;
+      dummySession.index += 1;
+      updateDummySessionStatus();
+      // Allow the firmware HIGH-Z event to arrive before queuing the next scan.
+      window.setTimeout(runNextDummySessionScan, 350);
+    }
+
+    function exportDummySessionCsv() {
+      if (!dummySession || dummySession.runs.length === 0) return;
+      const runs = dummySession.runs;
+      const dummyMeans = runs.map((run) => run.metrics.meanDelta).filter(Number.isFinite);
+      const dummyErrors = runs.map((run) => run.metrics.errorPct).filter(Number.isFinite);
+      const summaryHeader = 'run_id,mode,timestamp,frequency_hz,tia_path,peak_method,concentration,concentration_unit,dummy_profile,dummy_resistor_ohm,power_source,points,I_peak_nA,V_peak_mV,sigma_baseline_nA,SNR,baseline_points,dummy_mean_delta_nA,dummy_sd_delta_nA,dummy_expected_delta_nA,dummy_error_pct,dummy_scan_ms,dummy_boundary_jump_nA';
+      const rawHeader = 'run_id,mode,timestamp,frequency_hz,tia_path,concentration,concentration_unit,dummy_profile,dummy_resistor_ohm,power_source,E_WE_RE_mV,Delta_I_nA,Delta_I_avg3_nA,Delta_I_smooth5_nA,Delta_I_smooth7_nA,Delta_I_sg5_nA,I_forward_nA,I_reverse_nA';
+      const lines = [
+        '# NanoStat randomized dummy-cell session export',
+        `# Session_id,${dummySession.id}`,
+        `# Started_at,${dummySession.startedAt}`,
+        `# Exported_at,${new Date().toISOString()}`,
+        `# Session_status,${dummySession.status}`,
+        `# Repeats_per_profile,${dummySession.repeatsPerProfile}`,
+        `# Randomized_order,${dummySession.order.join('|')}`,
+        `# Dummy_resistor_ohm,${dummySession.resistorOhm}`,
+        `# Power_source,${dummySession.powerSource}`,
+        `# Frequency_Hz,${dummySession.frequencyHz}`,
+        `# TIA_path,${dummySession.tiaMode}`,
+        `# Runs,${runs.length}`,
+        `# Dummy_mean_delta_mean_nA,${dummyMeans.length ? mean(dummyMeans).toFixed(6) : ''}`,
+        `# Dummy_error_mean_pct,${dummyErrors.length ? mean(dummyErrors).toFixed(6) : ''}`,
+        '',
+        'SUMMARY',
+        summaryHeader,
+      ];
+      for (const run of runs) {
+        lines.push([
+          run.id, run.mode, run.timestamp, run.frequencyHz, run.tiaMode,
+          run.metrics.peakMethodLabel || 'SG5', run.concentration, run.concentrationUnit,
+          run.metrics.profile || run.dummyProfile, run.dummyResistorOhm, run.dummyPowerSource,
+          run.metrics.points, run.metrics.iPeak, run.metrics.vPeak, run.metrics.sigmaBaseline,
+          run.metrics.snr, run.metrics.baselinePoints, run.metrics.meanDelta, run.metrics.sdDelta,
+          run.metrics.expectedDelta, run.metrics.errorPct, run.metrics.scanMs,
+          run.metrics.maxSegmentBoundaryJump,
+        ].map(csvCell).join(','));
+      }
+      lines.push('', 'RAW_DATA', rawHeader);
+      for (const run of runs) {
+        for (const row of run.rows) {
+          lines.push([
+            run.id, run.mode, run.timestamp, run.frequencyHz, run.tiaMode,
+            run.concentration, run.concentrationUnit, run.metrics.profile || run.dummyProfile,
+            run.dummyResistorOhm, run.dummyPowerSource, row.v, row.delta, row.delta3,
+            row.smooth5, row.smooth7, row.sg5, row.ifwd, row.irev,
+          ].map(csvCell).join(','));
+        }
+      }
+      const blob = new Blob([lines.join('\n') + '\n'], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nanostat_dummy_session_${dummySession.id}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      log(`Exported randomized session CSV: ${runs.length} runs.`, 'SESSION');
+    }
+
+    async function sendCommand(cmd) {
+      if (!rxChar) throw new Error('Not connected');
+      log(cmd, 'TX');
+      const payload = encoder.encode(cmd.endsWith('\n') ? cmd : `${cmd}\n`);
+      const errors = [];
+
+      if (rxChar.properties?.write &&
+          typeof rxChar.writeValueWithResponse === 'function') {
+        try {
+          await writePayloadInChunks(payload, (chunk) => rxChar.writeValueWithResponse(chunk));
+          return;
+        } catch (err) {
+          errors.push(`withResponse=${err.message || err}`);
+        }
+      }
+      if (rxChar.properties?.writeWithoutResponse &&
+          typeof rxChar.writeValueWithoutResponse === 'function') {
+        try {
+          await writePayloadInChunks(payload, (chunk) => rxChar.writeValueWithoutResponse(chunk));
+          return;
+        } catch (err) {
+          errors.push(`withoutResponse=${err.message || err}`);
+        }
+      }
+      if (typeof rxChar.writeValue === 'function') {
+        try {
+          await writePayloadInChunks(payload, (chunk) => rxChar.writeValue(chunk));
+          return;
+        } catch (err) {
+          errors.push(`legacy=${err.message || err}`);
+        }
+      }
+      throw new Error(errors.length > 0 ?
+        `GATT write failed (${errors.join('; ')})` :
+        'NUS RX characteristic does not support browser writes');
+    }
+
+    function startSwvRun(workflow = 'manual') {
+      const freq = Number(el.freqInput.value);
+      if (!Number.isInteger(freq) || freq < 1 || freq > 250) {
+        log('Frequency must be an integer from 1 to 250 Hz', 'ERR');
+        return;
+      }
+
+      currentScanWorkflow = workflow;
+      currentScanMode = selectedMeasurementMode();
+      if (workflow === 'lod_blank') {
+        el.concentrationInput.value = '';
+        el.concentrationUnit.value = 'blank';
+      } else if (workflow === 'lod_cal') {
+        const conc = Number(el.concentrationInput.value);
+        if (!Number.isFinite(conc) || conc <= 0) {
+          log('LOD cortisol point requires a numeric concentration > 0.', 'ERR');
+          return;
+        }
+        if (el.concentrationUnit.value === 'blank') {
+          log('Select a concentration unit for the cortisol calibration point.', 'ERR');
+          return;
+        }
+      }
+
+      const meta = snapshotRunMetadata();
+      const tiaTokenByMode = {
+        HSTIA160K: 'P',
+        HSTIAEXT160K: 'X160',
+        HSTIAEXT330K: 'X330',
+        HSTIAEXT680K: 'X680',
+        LPTIA: 'L',
+      };
+      const tiaToken = tiaTokenByMode[meta.tiaMode] || 'P';
+      setCurrentScanFrequency(freq);
+      updateRunMetricsDisplay();
+      resetScan();
+      setScanState('queued');
+
+      if (meta.mode === 'dummy') {
+        const resistor = Number(meta.dummyResistorOhm);
+        const repeatCount = workflow === 'dummy_session' ? 1 : Number(el.dummyRepeatInput.value);
+        const profile = meta.dummyProfile || '5MV';
+
+        if (!Number.isFinite(resistor) || resistor < 1000 || resistor > 100000000) {
+          log('Dummy resistor must be 1000..100000000 ohm.', 'ERR');
+          setScanState('error');
+          return;
+        }
+        if (!Number.isInteger(repeatCount) || repeatCount < 1 || repeatCount > 50) {
+          log('Repeat count must be an integer from 1 to 50.', 'ERR');
+          setScanState('error');
+          return;
+        }
+
+        currentDummyFirmwareMetadata = {
+          PROFILE: profile,
+          FREQ: String(freq),
+          RDUMMY: String(resistor),
+        };
+        currentDoneMetadata = {};
+        const command = repeatCount > 1
+          ? `START,DUMMY_REPEAT,${profile},${freq},${tiaToken},${Math.round(resistor)},${repeatCount}`
+          : `START,DUMMY,${profile},${freq},${tiaToken},${Math.round(resistor)}`;
+
+        sendCommand(command).catch((err) => {
+          log(err.message, 'ERR');
+          setScanState('error');
+        });
+        return;
+      }
+
+      currentDummyFirmwareMetadata = {};
+      currentDoneMetadata = {};
+      sendCommand(`START,BLANK,${freq},${tiaToken}`).catch((err) => {
+        log(err.message, 'ERR');
+        setScanState('error');
+      });
+    }
+
+    async function connect() {
+      if (!navigator.bluetooth) {
+        throw new Error('Web Bluetooth is not available in this browser.');
+      }
+
+      device = await navigator.bluetooth.requestDevice({
+        filters: [{ namePrefix: 'NanoStat' }],
+        optionalServices: [NUS_SERVICE],
+      });
+      device.addEventListener('gattserverdisconnected', () => {
+        rxChar = null;
+        txChar = null;
+        if (dummySession?.active) {
+          dummySession.active = false;
+          dummySession.status = 'Session interrupted by disconnect.';
+          updateDummySessionStatus();
+        }
+        setConnected(false);
+        setScanState('idle');
+        log('Device disconnected', 'SYS');
+      });
+
+      server = await device.gatt.connect();
+      const service = await server.getPrimaryService(NUS_SERVICE);
+      rxChar = await service.getCharacteristic(NUS_RX);
+      txChar = await service.getCharacteristic(NUS_TX);
+      txChar.addEventListener('characteristicvaluechanged', onNotify);
+      await txChar.startNotifications();
+      setConnected(true);
+      setScanState('idle');
+      log('Connected and notifications enabled', 'SYS');
+    }
+
+    async function disconnect() {
+      if (device?.gatt?.connected) {
+        device.gatt.disconnect();
+      }
+      rxChar = null;
+      txChar = null;
+      setConnected(false);
+    }
+
+    function exportCsv() {
+      enrichSmoothingRows();
+      if (currentScanMode === 'dummy') {
+        const metrics = computeDummyMetrics();
+        const freq = currentScanFrequencyHz ?? Number(el.freqInput.value);
+        const freqLabel = Number.isFinite(freq) ? `${freq}Hz` : 'unknownHz';
+        const metadata = [
+          '# NanoStat dummy-cell SWV export',
+          `# Measurement_mode,dummy_cell_validation`,
+          `# Frequency_Hz,${Number.isFinite(freq) ? freq : ''}`,
+          `# Exported_at,${new Date().toISOString()}`,
+          `# TIA_path,${currentScanTiaMode}`,
+          `# SWV_profile,${metrics.profile}`,
+          `# Dummy_resistor_ohm,${metrics.dummyResistorOhm}`,
+          `# Power_source,${metrics.powerSource}`,
+          `# Points,${metrics.points}`,
+          `# Valid_points,${metrics.validPoints}`,
+          `# Trimmed_points_for_stats,${metrics.trimmedPoints}`,
+          `# Mean_Delta_I_nA,${Number.isFinite(metrics.meanDelta) ? metrics.meanDelta.toFixed(6) : ''}`,
+          `# SD_Delta_I_nA,${Number.isFinite(metrics.sdDelta) ? metrics.sdDelta.toFixed(6) : ''}`,
+          `# Expected_Delta_I_nA,${Number.isFinite(metrics.expectedDelta) ? metrics.expectedDelta.toFixed(6) : ''}`,
+          `# Error_pct,${Number.isFinite(metrics.errorPct) ? metrics.errorPct.toFixed(6) : ''}`,
+          `# Scan_ms,${Number.isFinite(metrics.scanMs) ? metrics.scanMs : ''}`,
+          `# Max_segment_boundary_jump_nA,${Number.isFinite(metrics.maxSegmentBoundaryJump) ? metrics.maxSegmentBoundaryJump.toFixed(6) : ''}`,
+          '# Notes,Dummy metrics use raw Delta_I values and discard first/last two valid points when possible',
+          '',
+        ].join('\n');
+        const header = 'E_WE_RE_mV,Delta_I_nA,Delta_I_avg3_nA,Delta_I_smooth5_nA,Delta_I_smooth7_nA,Delta_I_sg5_nA,I_forward_nA,I_reverse_nA\n';
+        const body = swvRows
+          .map((r) => `${r.v},${r.delta},${r.delta3},${r.smooth5},${r.smooth7},${r.sg5},${r.ifwd},${r.irev}`)
+          .join('\n');
+        const blob = new Blob([metadata + header + body + '\n'], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `nanostat_dummy_${metrics.profile}_${freqLabel}_${new Date().toISOString().replace(/[:.]/g, '-')}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        return;
+      }
+
+      const currentMetrics = computeScanMetrics();
+      const freq = currentScanFrequencyHz ?? Number(el.freqInput.value);
+      const freqLabel = Number.isFinite(freq) ? `${freq}Hz` : 'unknownHz';
+      const selectedRuns = Number.isFinite(freq)
+        ? swvRunMetrics.filter((run) => run.frequencyHz === Number(freq))
+        : swvRunMetrics;
+      const iPeaks = selectedRuns.map((run) => run.iPeak);
+      const vPeaks = selectedRuns.map((run) => run.vPeak);
+      const sigmas = selectedRuns.map((run) => run.sigmaBaseline);
+      const snrs = selectedRuns.map((run) => run.snr).filter(Number.isFinite);
+      const metadata = [
+        '# NanoStat SWV export',
+        `# Frequency_Hz,${Number.isFinite(freq) ? freq : ''}`,
+        `# Exported_at,${new Date().toISOString()}`,
+        `# TIA_path,${currentScanTiaMode}`,
+        `# Concentration,${currentScanConcentration}`,
+        `# Concentration_unit,${currentScanConcentrationUnit}`,
+        `# Peak_method,${currentMetrics ? currentMetrics.peakMethodLabel : selectedPeakMethod().label}`,
+        `# Peak_source_column,${currentMetrics ? currentMetrics.peakColumn : selectedPeakMethod().exportName}`,
+        `# Current_I_peak_nA,${currentMetrics ? currentMetrics.iPeak.toFixed(6) : ''}`,
+        `# Current_V_peak_mV,${currentMetrics ? currentMetrics.vPeak.toFixed(6) : ''}`,
+        `# Current_sigma_baseline_nA,${currentMetrics ? currentMetrics.sigmaBaseline.toFixed(6) : ''}`,
+        `# Current_SNR_abs_Ipeak_over_sigma,${currentMetrics ? currentMetrics.snr.toFixed(6) : ''}`,
+        `# Runs_at_frequency,${selectedRuns.length}`,
+        `# I_peak_mean_nA,${selectedRuns.length ? mean(iPeaks).toFixed(6) : ''}`,
+        `# I_peak_sd_nA,${selectedRuns.length ? sampleStd(iPeaks).toFixed(6) : ''}`,
+        `# V_peak_mean_mV,${selectedRuns.length ? mean(vPeaks).toFixed(6) : ''}`,
+        `# V_peak_sd_mV,${selectedRuns.length ? sampleStd(vPeaks).toFixed(6) : ''}`,
+        `# sigma_baseline_mean_nA,${selectedRuns.length ? mean(sigmas).toFixed(6) : ''}`,
+        `# sigma_baseline_sd_nA,${selectedRuns.length ? sampleStd(sigmas).toFixed(6) : ''}`,
+        `# SNR_mean,${snrs.length ? mean(snrs).toFixed(6) : ''}`,
+        `# Peak_search_window_mV,${PEAK_SEARCH_MIN_MV}..${PEAK_SEARCH_MAX_MV}`,
+        '# Notes,Potential axis is electrochemical E_WE-RE; Delta_I uses DropSens-style I_forward - I_reverse',
+        '',
+      ].join('\n');
+      const header = 'E_WE_RE_mV,Delta_I_nA,Delta_I_avg3_nA,Delta_I_smooth5_nA,Delta_I_smooth7_nA,Delta_I_sg5_nA,I_forward_nA,I_reverse_nA\n';
+      const body = swvRows
+        .map((r) => `${r.v},${r.delta},${r.delta3},${r.smooth5},${r.smooth7},${r.sg5},${r.ifwd},${r.irev}`)
+        .join('\n');
+      const blob = new Blob([metadata + header + body + '\n'], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nanostat_swv_${freqLabel}_${new Date().toISOString().replace(/[:.]/g, '-')}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportAllRunsCsv() {
+      if (savedRuns.length === 0) return;
+
+      const peakRuns = savedRuns.filter((run) => run.mode !== 'dummy' && run.metrics?.mode !== 'dummy');
+      const dummyRuns = savedRuns.filter((run) => run.mode === 'dummy' || run.metrics?.mode === 'dummy');
+      const iPeaks = peakRuns.map((run) => run.metrics.iPeak).filter(Number.isFinite);
+      const vPeaks = peakRuns.map((run) => run.metrics.vPeak).filter(Number.isFinite);
+      const sigmas = peakRuns.map((run) => run.metrics.sigmaBaseline).filter(Number.isFinite);
+      const snrs = peakRuns.map((run) => run.metrics.snr).filter(Number.isFinite);
+      const dummyMeans = dummyRuns.map((run) => run.metrics.meanDelta).filter(Number.isFinite);
+      const dummySd = dummyRuns.map((run) => run.metrics.sdDelta).filter(Number.isFinite);
+      const dummyErrors = dummyRuns.map((run) => run.metrics.errorPct).filter(Number.isFinite);
+      const lines = [
+        '# NanoStat SWV multi-run export',
+        `# Exported_at,${new Date().toISOString()}`,
+        `# Runs,${savedRuns.length}`,
+        `# Peak_runs,${peakRuns.length}`,
+        `# Dummy_runs,${dummyRuns.length}`,
+        `# I_peak_mean_nA,${iPeaks.length ? mean(iPeaks).toFixed(6) : ''}`,
+        `# I_peak_sd_nA,${iPeaks.length ? sampleStd(iPeaks).toFixed(6) : ''}`,
+        `# V_peak_mean_mV,${vPeaks.length ? mean(vPeaks).toFixed(6) : ''}`,
+        `# V_peak_sd_mV,${vPeaks.length ? sampleStd(vPeaks).toFixed(6) : ''}`,
+        `# sigma_baseline_mean_nA,${sigmas.length ? mean(sigmas).toFixed(6) : ''}`,
+        `# sigma_baseline_sd_nA,${sigmas.length ? sampleStd(sigmas).toFixed(6) : ''}`,
+        `# SNR_mean,${snrs.length ? mean(snrs).toFixed(6) : ''}`,
+        `# Dummy_mean_delta_mean_nA,${dummyMeans.length ? mean(dummyMeans).toFixed(6) : ''}`,
+        `# Dummy_sd_delta_mean_nA,${dummySd.length ? mean(dummySd).toFixed(6) : ''}`,
+        `# Dummy_error_mean_pct,${dummyErrors.length ? mean(dummyErrors).toFixed(6) : ''}`,
+        `# Peak_search_window_mV,${PEAK_SEARCH_MIN_MV}..${PEAK_SEARCH_MAX_MV}`,
+        '',
+        'SUMMARY',
+        'run_id,mode,timestamp,frequency_hz,tia_path,peak_method,concentration,concentration_unit,dummy_profile,dummy_resistor_ohm,power_source,points,I_peak_nA,V_peak_mV,sigma_baseline_nA,SNR,baseline_points,dummy_mean_delta_nA,dummy_sd_delta_nA,dummy_expected_delta_nA,dummy_error_pct,dummy_scan_ms,dummy_boundary_jump_nA',
+        ...savedRuns.map((run) => [
+          run.id,
+          run.mode || run.metrics?.mode || 'blank',
+          run.timestamp,
+          run.frequencyHz,
+          run.tiaMode,
+          run.metrics.peakMethodLabel || run.metrics.peakMethod || 'SG5',
+          run.concentration,
+          run.concentrationUnit,
+          run.metrics.profile || run.dummyProfile || '',
+          run.dummyResistorOhm || '',
+          run.dummyPowerSource || '',
+          run.metrics.points,
+          run.metrics.iPeak,
+          run.metrics.vPeak,
+          run.metrics.sigmaBaseline,
+          run.metrics.snr,
+          run.metrics.baselinePoints,
+          run.metrics.meanDelta,
+          run.metrics.sdDelta,
+          run.metrics.expectedDelta,
+          run.metrics.errorPct,
+          run.metrics.scanMs,
+          run.metrics.maxSegmentBoundaryJump,
+        ].map(csvCell).join(',')),
+        '',
+        'RAW_DATA',
+        'run_id,mode,timestamp,frequency_hz,tia_path,concentration,concentration_unit,dummy_profile,dummy_resistor_ohm,power_source,E_WE_RE_mV,Delta_I_nA,Delta_I_avg3_nA,Delta_I_smooth5_nA,Delta_I_smooth7_nA,Delta_I_sg5_nA,I_forward_nA,I_reverse_nA',
+      ];
+
+      for (const run of savedRuns) {
+        for (const row of run.rows) {
+          lines.push([
+            run.id,
+            run.mode || run.metrics?.mode || 'blank',
+            run.timestamp,
+            run.frequencyHz,
+            run.tiaMode,
+            run.concentration,
+            run.concentrationUnit,
+            run.metrics.profile || run.dummyProfile || '',
+            run.dummyResistorOhm || '',
+            run.dummyPowerSource || '',
+            row.v,
+            row.delta,
+            row.delta3,
+            row.smooth5,
+            row.smooth7,
+          row.sg5,
+          row.ifwd,
+          row.irev,
+          ].map(csvCell).join(','));
+        }
+      }
+
+      const blob = new Blob([lines.join('\n') + '\n'], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const label = savedRuns[0]?.concentration || savedRuns[0]?.concentrationUnit || 'runs';
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nanostat_swv_runs_${label}_${new Date().toISOString().replace(/[:.]/g, '-')}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportLodCsv() {
+      const stats = computeLodStats();
+      const lines = [
+        '# NanoStat LOD workflow export',
+        `# Exported_at,${new Date().toISOString()}`,
+        `# Blank_confirmed,${lodBlankConfirmed}`,
+        `# Calibration_confirmed,${lodCalibrationConfirmed}`,
+        `# Blank_runs,${stats.blanks.length}`,
+        `# Calibration_runs,${stats.cals.length}`,
+        `# Blank_I_peak_mean_nA,${Number.isFinite(stats.blankPeakMean) ? stats.blankPeakMean.toFixed(6) : ''}`,
+        `# Blank_I_peak_sd_nA,${Number.isFinite(stats.blankSigma) ? stats.blankSigma.toFixed(6) : ''}`,
+        `# Blank_sigma_pct,${Number.isFinite(stats.sigmaBlankPct) ? stats.sigmaBlankPct.toFixed(6) : ''}`,
+        `# LOD_method,functional_threshold_response_curve`,
+        `# Functional_threshold_pct,${Number.isFinite(stats.functionalThresholdPct) ? stats.functionalThresholdPct.toFixed(6) : ''}`,
+        `# Functional_LOD_${stats.unit},${Number.isFinite(stats.functionalLod.lod) ? stats.functionalLod.lod.toFixed(9) : ''}`,
+        `# Functional_LOD_label,${stats.functionalLod.label}${stats.unit ? ` ${stats.unit}` : ''}`,
+        `# Functional_LOD_status,${stats.functionalLod.status}`,
+        `# Functional_LOD_bracket_${stats.unit},${stats.functionalLod.bracket}`,
+        `# Linear_diagnostic_slope_nA_per_${stats.unit},${Number.isFinite(stats.slope) ? stats.slope.toFixed(9) : ''}`,
+        `# Linear_diagnostic_LOD_${stats.unit},${Number.isFinite(stats.lod) ? stats.lod.toFixed(9) : ''}`,
+        '',
+        'LOD_SUMMARY_RUNS',
+        'run_id,workflow,timestamp,frequency_hz,tia_path,peak_method,concentration,concentration_unit,I_peak_nA,V_peak_mV,sigma_baseline_nA,SNR',
+      ];
+
+      for (const run of [...stats.blanks, ...stats.cals]) {
+        lines.push([
+          run.id,
+          run.workflow,
+          run.timestamp,
+          run.frequencyHz,
+          run.tiaMode,
+          run.metrics.peakMethodLabel || run.metrics.peakMethod || 'SG5',
+          run.concentration,
+          run.concentrationUnit,
+          run.metrics.iPeak,
+          run.metrics.vPeak,
+          run.metrics.sigmaBaseline,
+          run.metrics.snr,
+        ].map(csvCell).join(','));
+      }
+
+      lines.push('');
+      lines.push('RAW_DATA');
+      lines.push('run_id,workflow,timestamp,frequency_hz,tia_path,concentration,concentration_unit,E_WE_RE_mV,Delta_I_nA,Delta_I_avg3_nA,Delta_I_smooth5_nA,Delta_I_smooth7_nA,Delta_I_sg5_nA,I_forward_nA,I_reverse_nA');
+      for (const run of [...stats.blanks, ...stats.cals]) {
+        for (const row of run.rows) {
+          lines.push([
+            run.id,
+            run.workflow,
+            run.timestamp,
+            run.frequencyHz,
+            run.tiaMode,
+            run.concentration,
+            run.concentrationUnit,
+            row.v,
+            row.delta,
+            row.delta3,
+            row.smooth5,
+            row.smooth7,
+            row.sg5,
+            row.ifwd,
+            row.irev,
+          ].map(csvCell).join(','));
+        }
+      }
+
+      const blob = new Blob([lines.join('\n') + '\n'], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nanostat_lod_${new Date().toISOString().replace(/[:.]/g, '-')}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    el.connectBtn.addEventListener('click', async () => {
+      try {
+        await connect();
+      } catch (err) {
+        log(err.message || String(err), 'ERR');
+      }
+    });
+    el.disconnectBtn.addEventListener('click', disconnect);
+    el.measurementPageBtn.addEventListener('click', () => showPage('measurement'));
+    el.highzPageBtn.addEventListener('click', () => showPage('highz'));
+    el.batteryPageBtn.addEventListener('click', () => showPage('battery'));
+    el.pingBtn.addEventListener('click', () => sendCommand('PING').catch((err) => log(err.message, 'ERR')));
+    el.statusBtn.addEventListener('click', () => sendCommand('STATUS').catch((err) => log(err.message, 'ERR')));
+    el.readBtn.addEventListener('click', () => sendCommand('READ,LATEST').catch((err) => log(err.message, 'ERR')));
+    el.batteryRefreshBtn.addEventListener('click', () => {
+      if (batteryRequestPending) return;
+      batteryRequestPending = true;
+      if (batteryRequestTimer !== null) {
+        clearTimeout(batteryRequestTimer);
+      }
+      batteryRequestTimer = setTimeout(() => {
+        batteryRequestPending = false;
+        batteryRequestTimer = null;
+        updateControls();
+        batteryLog('Battery status request timed out.', 'ERR');
+      }, 8000);
+      updateControls();
+      batteryLog('Requesting battery status over BLE.', 'TX');
+      sendCommand('BATTERY').catch((err) => {
+        batteryRequestPending = false;
+        if (batteryRequestTimer !== null) {
+          clearTimeout(batteryRequestTimer);
+          batteryRequestTimer = null;
+        }
+        updateControls();
+        log(err.message, 'ERR');
+        batteryLog(err.message, 'ERR');
+      });
+    });
+    el.startBtn.addEventListener('click', () => startSwvRun('manual'));
+    el.startDummySessionBtn.addEventListener('click', startDummySession);
+    el.exportDummySessionBtn.addEventListener('click', exportDummySessionCsv);
+    el.highZBtn.addEventListener('click', () => {
+      sendCommand('START,HIGHZ').catch((err) => log(err.message, 'ERR'));
+    });
+    el.highzTestStartBtn.addEventListener('click', () => {
+      highzTestHolding = false;
+      highzTestRequestPending = true;
+      if (highzTestTimer !== null) clearTimeout(highzTestTimer);
+      highzTestTimer = setTimeout(() => {
+        if (highzTestRequestPending) {
+          highzTestRequestPending = false;
+          el.highzTestStatus.textContent = 'No firmware response. Check that the new firmware is flashed and BLE notifications are enabled.';
+          highzTestLog('High-Z test request timed out.', 'ERR');
+          updateControls();
+        }
+      }, 8000);
+      highzTestLog('START,HIGHZ_TEST', 'TX');
+      el.highzTestStatus.textContent = 'Starting validation scan...';
+      sendCommand('START,HIGHZ_TEST').catch((err) => {
+        highzTestLog(err.message, 'ERR');
+        el.highzTestStatus.textContent = 'Error';
+      });
+    });
+    el.highzTestReleaseBtn.addEventListener('click', () => {
+      highzTestLog('START,HIGHZ', 'TX');
+      highzTestRequestPending = true;
+      sendCommand('START,HIGHZ').catch((err) => highzTestLog(err.message, 'ERR'));
+    });
+    el.highzTestResetBtn.addEventListener('click', () => {
+      highzTestLog('RESET,HIGHZ_TEST', 'TX');
+      highzTestRequestPending = true;
+      el.highzTestStatus.textContent = 'Resetting High-Z validation state...';
+      sendCommand('RESET,HIGHZ_TEST').catch((err) => {
+        highzTestRequestPending = false;
+        highzTestLog(err.message, 'ERR');
+        el.highzTestStatus.textContent = 'Reset failed';
+        updateControls();
+      });
+    });
+    el.modeSelect.addEventListener('change', () => {
+      currentScanMode = selectedMeasurementMode();
+      resetScan();
+      updateRunMetricsDisplay();
+      log(`Measurement mode set to ${currentScanMode === 'dummy' ? 'dummy-cell validation' : 'aptasensor PBS/blank'}.`, 'SYS');
+    });
+    el.lodBlankBtn.addEventListener('click', () => startSwvRun('lod_blank'));
+    el.lodCalBtn.addEventListener('click', () => startSwvRun('lod_cal'));
+    el.peakMethodSelect.addEventListener('change', () => {
+      el.peakMetricLabel.textContent = `Peak ${selectedPeakMethod().label}`;
+      updatePeakFromRows();
+      chart.update();
+      log(`Peak method set to ${selectedPeakMethod().label}. Current display/export will use this method.`, 'SYS');
+    });
+    el.lodConfirmBlankBtn.addEventListener('click', () => {
+      lodBlankConfirmed = lodBlankRuns().length >= 5;
+      updateLodSummary();
+      log(lodBlankConfirmed ? 'LOD blank set confirmed.' : 'Need at least 5 blank runs.', 'LOD');
+    });
+    el.lodConfirmCalBtn.addEventListener('click', () => {
+      lodCalibrationConfirmed = lodCalibrationRuns().length >= 2;
+      updateLodSummary();
+      log(lodCalibrationConfirmed ? 'LOD calibration set confirmed.' : 'Need at least 2 cortisol points.', 'LOD');
+    });
+    el.exportBtn.addEventListener('click', exportCsv);
+    el.exportAllBtn.addEventListener('click', exportAllRunsCsv);
+    el.lodExportBtn.addEventListener('click', exportLodCsv);
+    el.nextRunBtn.addEventListener('click', () => {
+      resetScan();
+      setScanState('idle');
+      log('Ready for next independent SWV run.', 'SYS');
+    });
+    el.runList.addEventListener('click', (event) => {
+      const idText = event.target?.dataset?.deleteRun;
+      if (!idText) return;
+      const runId = Number(idText);
+      savedRuns = savedRuns.filter((run) => run.id !== runId);
+      swvRunMetrics = savedRuns
+        .filter((run) => run.mode !== 'dummy' && run.metrics?.mode !== 'dummy')
+        .map((run) => run.metrics);
+      lodBlankConfirmed = false;
+      lodCalibrationConfirmed = false;
+      renderRunList();
+      updateRunMetricsDisplay();
+      log(`Deleted run ${runId}.`, 'RUN');
+    });
+    el.zoomInBtn.addEventListener('click', () => zoomChart(1.25));
+    el.zoomOutBtn.addEventListener('click', () => zoomChart(0.8));
+    el.resetZoomBtn.addEventListener('click', resetChartView);
+    el.clearHighlightBtn.addEventListener('click', () => {
+      highlightedDatasetIndex = null;
+      applyDatasetFocus();
+    });
+    el.clearBtn.addEventListener('click', () => {
+      el.log.textContent = '';
+      resetScan();
+      resetRunMetrics();
+      savedRuns = [];
+      currentRunId = 0;
+      lodBlankConfirmed = false;
+      lodCalibrationConfirmed = false;
+      renderRunList();
+      setScanState(rxChar ? 'idle' : 'idle');
+    });
+
+    setConnected(false);
+    setScanState('idle');
+    renderRunList();
+    updateRunMetricsDisplay();
+  </script>
+</body>
+</html>
