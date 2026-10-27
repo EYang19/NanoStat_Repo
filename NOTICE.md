@@ -2,7 +2,7 @@
 
 ## Project Material
 
-No project-wide open-source licence has been assigned to the NanoStat firmware, hardware exports, web application, experimental data, analysis code, figures, dissertation, or poster. Copyright remains with the relevant authors unless a file states otherwise.
+No project-wide open-source licence has been assigned to the NanoStat firmware, hardware exports, web application, experimental data, analysis code, figures, dissertation, poster, or author manuscript. Copyright remains with the relevant authors unless a file states otherwise.
 
 Public availability on GitHub does not by itself grant permission to copy, modify, manufacture, redistribute, or use the material commercially. Add an explicit project licence before treating this repository as an open-source release.
 
@@ -16,5 +16,5 @@ The datasets are supplied to support inspection and reproduction of the reported
 
 ## Third-Party Publications
 
-Copies of unpublished manuscripts and screenshots extracted from third-party papers were deliberately excluded from this repository. Bibliographic discussion in the dissertation does not imply redistribution rights for the cited publications.
+Third-party unpublished manuscripts and screenshots extracted from third-party papers are excluded from this repository. The authors' own submitted SereneStat manuscript is included in `reports/` at the author's request and is explicitly labelled unpublished; its inclusion does not indicate conference acceptance or confer an additional reuse licence. Bibliographic discussion in the dissertation does not imply redistribution rights for the cited publications.
 

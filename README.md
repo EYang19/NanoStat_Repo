@@ -6,6 +6,14 @@ Cortisol aptasensing in phosphate-buffered saline (PBS) was used as the applicat
 
 ![NanoStat integrated prototype](experiments/07_enclosure_system_validation/figures/system_chain_reference.png)
 
+## Submitted Manuscript (Unpublished)
+
+[**SereneStat: A Handheld Potentiostat for SWV and Demonstration with a Cortisol Aptasensor**](reports/SereneStat_ISCAS2027_Submitted_Unpublished_Manuscript.pdf)
+
+By Chengyu Yang, A. Nisha Naeem and Sara S. Ghoreishizadeh. Submitted to ISCAS 2027; decision pending as of 27 October 2026. This is an **unpublished author manuscript**, not an accepted paper or an IEEE-published version of record.
+
+SereneStat is the later name used for the NanoStat project. The manuscript describes later standalone-operation and measurement work; the archived firmware and documentation elsewhere in this repository may represent earlier project stages. See the [manuscript status and correction note](reports/README.md#submitted-manuscript-unpublished) before using its specifications.
+
 ## Repository Contents
 
 | Path | Contents |
@@ -15,7 +23,7 @@ Cortisol aptasensing in phosphate-buffered saline (PBS) was used as the applicat
 | [`webapp/`](webapp/) | Browser-based BLE control, plotting, and CSV export application |
 | [`experiments/`](experiments/) | Raw data, analysis scripts, derived tables, and figures for electrical, system, and sensor validation |
 | [`docs/`](docs/) | Architecture, subsystem, validation, reproducibility, and limitation notes |
-| [`reports/`](reports/) | Final dissertation and poster PDFs |
+| [`reports/`](reports/) | Dissertation, poster and unpublished submitted manuscript |
 
 ## Implemented Measurement Chain
 
